@@ -124,22 +124,21 @@ def make_design_figure():
 
     _box(ax, 2.0, 34.0, 10.0, 10.0, "Request", "account +\ncredential", GRAY, LIGHT_GRAY)
     _box(ax, 16.0, 34.0, 21.0, 10.0, "Exact active scope", "generation + version\ncertificate agrees", BLUE, LIGHT_BLUE)
-    _box(ax, 42.0, 34.0, 16.0, 10.0, "One-sided screen", "MISS = nonmember\nHIT = continue", BLUE, LIGHT_BLUE)
-    _box(ax, 63.0, 34.0, 18.0, 10.0, "Exact exception", "key + active version\nMISS = coalesce", VERMILION, LIGHT_RED)
+    _box(ax, 42.0, 34.0, 16.0, 10.0, "Exact exception", "key + active version\nMISS = continue", VERMILION, LIGHT_RED)
+    _box(ax, 63.0, 34.0, 18.0, 10.0, "One-sided screen", "MISS = nonmember\nHIT = continue", BLUE, LIGHT_BLUE)
     _box(ax, 87.0, 34.0, 10.5, 10.0, "Verifier", "authoritative", TEAL, LIGHT_TEAL, 7.5, 6.8)
 
     _arrow(ax, (12.0, 39.0), (16.0, 39.0), color=INK)
     _arrow(ax, (37.0, 39.0), (42.0, 39.0), color=BLUE)
     _arrow(ax, (58.0, 39.0), (63.0, 39.0), color=TEAL)
-    ax.text(60.5, 40.0, "hit", ha="center", va="bottom", fontsize=7.2, color=TEAL)
 
     # Authorized local rejection paths.
-    _box(ax, 41.0, 22.0, 18.0, 7.5, "LOCAL REJECT", "certified nonmember", VERMILION, LIGHT_RED, 8.0, 7.0)
-    _box(ax, 62.0, 22.0, 20.0, 7.5, "LOCAL REJECT", "confirmed mismatch", VERMILION, LIGHT_RED, 8.0, 7.0)
+    _box(ax, 41.0, 22.0, 18.0, 7.5, "LOCAL REJECT", "confirmed mismatch", VERMILION, LIGHT_RED, 8.0, 7.0)
+    _box(ax, 62.0, 22.0, 20.0, 7.5, "LOCAL REJECT", "certified nonmember", VERMILION, LIGHT_RED, 8.0, 7.0)
     _arrow(ax, (50.0, 34.0), (50.0, 29.5), color=VERMILION)
-    ax.text(50.9, 31.8, "miss", ha="left", va="center", fontsize=7.2, color=VERMILION)
+    ax.text(50.9, 31.8, "hit", ha="left", va="center", fontsize=7.2, color=VERMILION)
     _arrow(ax, (72.0, 34.0), (72.0, 29.5), color=VERMILION)
-    ax.text(72.9, 31.8, "hit", ha="left", va="center", fontsize=7.2, color=VERMILION)
+    ax.text(72.9, 31.8, "miss", ha="left", va="center", fontsize=7.2, color=VERMILION)
 
     # Cache miss reaches a coalesced verifier call.
     _arrow(ax, (81.0, 39.0), (87.0, 39.0), color=TEAL)
@@ -151,12 +150,10 @@ def make_design_figure():
     _arrow(ax, (92.0, 16.0), (92.0, 34.0), color=GRAY, style=(0, (3, 2)), width=1.0)
     ax.text(43.5, 14.5, "missing, stale, or ambiguous  ->  FORWARD (fail open)", ha="center", va="center", fontsize=7.5, color=GRAY)
 
-    # Only one typed outcome may feed the cache; rotation invalidates its scope.
-    ax.plot([92.0, 92.0, 79.0], [34.0, 8.5, 8.5], color=TEAL, linewidth=1.15, zorder=0)
-    _arrow(ax, (79.0, 8.5), (79.0, 34.0), color=TEAL, width=1.15)
-    ax.text(87.0, 9.6, "typed mismatch only", ha="center", va="bottom", fontsize=7.0, color=TEAL)
-    _box(ax, 64.5, 3.6, 12.0, 7.0, "Version rotates", "old entry inactive", GRAY, LIGHT_GRAY, 7.2, 6.6)
-    _arrow(ax, (70.5, 10.6), (70.5, 34.0), color=GRAY, style=(0, (3, 2)), width=1.0)
+    # Only one typed, version-bound outcome may feed the exception cache.
+    ax.plot([97.5, 97.5, 60.0, 60.0], [34.0, 8.5, 8.5, 36.0], color=TEAL, linewidth=1.15, zorder=0)
+    _arrow(ax, (60.0, 36.0), (58.0, 36.0), color=TEAL, width=1.15)
+    ax.text(77.0, 9.6, "typed mismatch only; version-bound", ha="center", va="bottom", fontsize=7.0, color=TEAL)
 
     ax.text(
         2.0,
@@ -228,7 +225,7 @@ def make_results_figure():
     fig.text(
         0.5,
         0.015,
-        "20 paired seeds per verifier; synthetic in-process service. Panel (b): 16 legitimate + 32 invalid req/s. No network/TLS claim.",
+        "20 paired seeds per verifier; synthetic in-process service. Panel (b): 16 legitimate + 32 invalid requests/s.",
         ha="center",
         va="bottom",
         fontsize=7.7,
