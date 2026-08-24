@@ -1,0 +1,97 @@
+schema_version: 2
+status: RESEARCH_IN_PROGRESS
+main_claims_manifest_id: sha256:68d8fc2158f2423123e70d6c1735ebae6ee1df6eceb947bb2d4f3a65c978c617
+traffic_mode: open_loop
+execution:
+  require_clean_git: false
+  provenance_class: TEMPORARY_SMOKE
+  run_authorization: TEMPORARY_SMOKE_ONLY
+seeds: [260805]
+dataset:
+  generator: service-synthetic-exact-bytes-v1
+  seed: 20260805
+  account_count: 64
+  false_positive_pool_size: 128
+  false_positive_max_scan: 4096
+filter:
+  family: global_bloom
+  bits_per_account: 4
+  k_hashes: 3
+methods:
+  - name: no_prescreen
+    implementation: no_prescreen_v1
+    use_positive_screen: false
+    cache_policy: null
+    use_singleflight: false
+    claim_scope: no_prescreen_control
+    baseline_role: control
+  - name: static_global_bloom_mechanism_baseline
+    implementation: static_global_bloom_v1
+    use_positive_screen: true
+    cache_policy: null
+    use_singleflight: false
+    claim_scope: global_bloom_prescreen_mechanism
+    baseline_role: provisional_mechanism_baseline
+  - name: mechanism_global_bloom_exact_cache_tinylfu
+    implementation: global_bloom_exact_negative_cache_tinylfu_singleflight_v1
+    use_positive_screen: true
+    cache_policy: tinylfu
+    use_singleflight: true
+    claim_scope: global_bloom_exact_negative_cache_tinylfu_singleflight_mechanism
+    baseline_role: candidate_mechanism
+verifier:
+  enabled_profiles: [pbkdf2_smoke]
+  profiles:
+    pbkdf2_smoke:
+      algorithm: pbkdf2_sha256
+      iterations: 2000
+      dklen: 32
+service:
+  frontend_workers: 2
+  backend_workers: 2
+  frontend_queue_capacity: 32
+  backend_queue_capacity: 16
+  max_connections: 128
+  max_padding_timers: 128
+  max_waiters_per_key: 16
+  max_waiters_global: 64
+  failure_padding_ms: 2
+  request_timeout_ms: 250
+  cache_capacity: 64
+  cache_ttl_seconds: 30
+  cache_max_entries_per_account: 16
+measurement:
+  arrival_distribution: deterministic
+  warmup_seconds: 0.5
+  warmup_legitimate_rps: 4
+  duration_seconds: 0.75
+  resource_sample_interval_seconds: 0.01
+  minimum_resource_samples: 10
+  maximum_arrival_lag_p99_ms: 250
+  maximum_arrival_lag_max_ms: 500
+  shutdown_timeout_seconds: 5
+loads:
+  legitimate_rps: [8]
+  invalid_rps: [0, 12]
+scenarios:
+  - repeat_heavy_false_positive
+  - unique_first_seen_false_positive
+scenario_parameters:
+  repeat_tuple_count: 2
+  repeat_fraction: 0.75
+saturation_criteria:
+  inference_mode: diagnostic_points_only
+  baseline_method: static_global_bloom_mechanism_baseline
+  maximum_legitimate_p99_regression_fraction: 0.05
+  maximum_legitimate_timeout_rate: 0.05
+  maximum_queue_drop_rate: 0.01
+  minimum_legitimate_throughput_fraction: 0.90
+evidence_scope:
+  synthetic_only: true
+  network_transport: BLOCKED_NOT_MEASURED
+  gate_claims_permitted: false
+  runner_capability: GLOBAL_BLOOM_MECHANISM_ONLY
+  main_claims_alignment: BLOCKED_MAIN_CLAIMS_MANIFEST_NOT_FROZEN
+  main_claims_artifact_binding: BOUND
+  complete_r_traps_claim: BLOCKED_MECHANISM_ONLY
+  strong_matched_baseline: BLOCKED_PENDING_PHASE1_FRONTIER

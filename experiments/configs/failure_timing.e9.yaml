@@ -1,0 +1,101 @@
+schema: traps-e9-failure-timing-config-v4
+experiment_id: e9-loopback-failure-timing-v1
+default_profile: smoke
+failure_cases:
+  - unknown_username
+  - positive_screen_negative
+  - negative_cache_hit
+  - backend_mismatch
+  - transient_backend_failure
+functional_cases:
+  - valid_password
+wire_contract:
+  transport: TCP_IPV4_LOOPBACK
+  request_bytes: 110
+  failure_status: 401
+  failure_frames:
+    - status
+    - body
+    - end
+  failure_body: authentication failed
+  connection_behavior: ONE_REQUEST_CLIENT_HALF_CLOSE_SERVER_EOF_NO_REUSE
+statistics:
+  primary_metric: request_to_eof_ns
+  auc_orientation: max_auc_one_minus_auc
+  confidence_level: 0.95
+  failure_auc_ci_upper_threshold: 0.55
+  cluster_unit: seed
+  bootstrap_method: paired_seed_percentile
+  primary_stratification: kdf_workload
+  combined_role: descriptive_secondary_only
+profiles:
+  smoke:
+    evidence_class: IMPLEMENTATION_SMOKE_ONLY
+    enabled: true
+    expected_commit: UNPINNED_SMOKE
+    independent_audit_id: NOT_APPLICABLE_SMOKE
+    producer_public_key_hex: null
+    seeds:
+      - 9900
+      - 9901
+    samples_per_case_per_seed: 8
+    warmup_per_case_per_seed: 1
+    bootstrap_replicates: 200
+    pbkdf2_iterations: 100
+    pbkdf2_dklen: 16
+    kdf_workloads:
+      - algorithm: pbkdf2_hmac_sha256
+        iterations: 100
+        dklen: 16
+    failure_padding_ms: 2.0
+    auth_workers: 2
+    max_pending_padding: 32
+    socket_timeout_seconds: 2.0
+  formal:
+    evidence_class: FORMAL_E9_EXTERNAL_TIMING
+    enabled: false
+    freeze_status: BLOCKED_PENDING_AUDITOR_CONTRACT_CHALLENGE_AND_LINUX_PROCESS_LONG_TEST
+    formal_contract: EXTERNAL_AUDITOR_SIGNED_MANIFEST_REQUIRED
+    formal_blockers:
+      - AUDITOR_SIGNED_HOST_EXECUTION_CONTRACT_AND_FRESH_CHALLENGE_REQUIRED
+      - FRESH_OS_PROCESS_PER_SEED_LINUX_FORMAL_SCALE_LONG_TEST_PENDING
+      - HOST_EXECUTION_ARTIFACT_PUBLICATION_REQUIRES_AUDITOR_PRIVACY_APPROVAL
+    seeds:
+      - 9200
+      - 9201
+      - 9202
+      - 9203
+      - 9204
+      - 9205
+      - 9206
+      - 9207
+      - 9208
+      - 9209
+      - 9210
+      - 9211
+      - 9212
+      - 9213
+      - 9214
+      - 9215
+      - 9216
+      - 9217
+      - 9218
+      - 9219
+    samples_per_case_per_seed: 200
+    warmup_per_case_per_seed: 10
+    bootstrap_replicates: 2000
+    pbkdf2_iterations: 310000
+    pbkdf2_dklen: 32
+    kdf_workloads:
+      - algorithm: pbkdf2_hmac_sha256
+        iterations: 310000
+        dklen: 32
+      - algorithm: argon2id
+        memory_kib: 19456
+        time_cost: 2
+        parallelism: 1
+        hash_len: 32
+    failure_padding_ms: 10.0
+    auth_workers: 4
+    max_pending_padding: 256
+    socket_timeout_seconds: 5.0

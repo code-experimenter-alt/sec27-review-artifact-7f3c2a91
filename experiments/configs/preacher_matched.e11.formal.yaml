@@ -1,0 +1,108 @@
+schema: traps-e11-preacher-formal-workload-manifest-v1
+status: PREREGISTERED_PENDING_PHASE1_V2_1_BASELINE
+source:
+  repository: https://github.com/SHiftLin/NSDI2025-PreAcher.git
+  revision: 5a083ceea001b002187d9d4b5a26371be061f1cc
+  redistribution: RETRIEVE_ONLY_NO_BUNDLING
+preacher_profiles:
+  upstream_as_released:
+    source_class: UPSTREAM_AS_RELEASED
+    implementation_status: RELEASED_PROTOCOL_ADAPTER_IMPLEMENTED
+    kmer_k: 5
+    weighted_minhash: true
+    minhash_key_mode: CONSTANT_LITERAL
+    minhash_key_literal: 42
+    failure_cutoff_q: null
+  paper_intended_derived:
+    source_class: DERIVED_NOT_UPSTREAM
+    implementation_status: NOT_IMPLEMENTED_EXCLUDED_FROM_FORMAL_RESULTS
+    kmer_k: 4
+    weighted_minhash: true
+    minhash_key_mode: USER_BOUND_HMAC
+    minhash_key_literal: null
+    failure_cutoff_q: 20
+active_preacher_profile: upstream_as_released
+derived_baseline_binding:
+  schema: traps-e11-phase1-v2-derived-baseline-binding-v1
+  protocol: phase1_timing_frontier_v2_1
+  status: PENDING_PHASE1_V2_1_POSTRUN_RECEIPT
+  expected_receipt_schema: traps-phase1-timing-frontier-v2-postrun-receipt-v2
+  selection_contract_path: experiments/configs/phase1_v21_downstream_selection.yaml
+  selection_contract_id: 9721fc00a36dff19d3f56727c7c41fda41dc95a0e9ecac8d49e5f002adb536c2
+  registration_artifact_path: null
+  registration_id: null
+  receipt_path: null
+  receipt_id: null
+  aggregate_path: null
+  aggregate_id: null
+  selected_profile: null
+  selected_spec_id: null
+  selected_spec_identity: null
+  selected_filter: null
+  selection_policy: ABSOLUTE_BUDGET_STRONGEST_CONSERVATIVE_FRONTIER_V1
+seeds: [7100, 7101, 7102, 7103, 7104, 7105, 7106, 7107, 7108, 7109,
+        7110, 7111, 7112, 7113, 7114, 7115, 7116, 7117, 7118, 7119]
+matched_system_contract:
+  arrival_unit: authentication_attempt
+  arrival_mode: open_loop
+  schedule: deterministic_interleaved
+  account_count: 128
+  kdf:
+    algorithm: pbkdf2_hmac_sha256
+    iterations: 10000
+    salt_bytes: 32
+    output_bytes: 256
+  workers:
+    load_generator: 1
+    frontend_handler: 20
+    origin_kdf_handler: 20
+  methods:
+    - preacher_upstream_as_released
+    - r_traps_released_kdf_profile
+  repository_mechanism:
+    positive_screen: REGISTERED_PHASE1_V2_1_STRONG_BASELINE
+    exact_negative_cache: lru
+    singleflight: true
+workloads:
+  - name: matched_ados_open_loop
+    role: SAME_BACKEND_AND_OFFERED_LOAD_END_TO_END_ADOS
+    duration_seconds: 120
+    legitimate_attempts_per_second: 16
+    invalid_attempts_per_second: 32
+    invalid_tuple_mode: DETERMINISTIC_UNIQUE_FIRST_SEEN
+    false_positive_source: null
+    repeated_tuple_count: null
+    minimum_replay_multiplicity: null
+    direct_latency_comparison_permitted: true
+  - name: repeat_heavy_static_survivor
+    role: STATIC_SURVIVOR_REPLAY_AMPLIFICATION
+    duration_seconds: 120
+    legitimate_attempts_per_second: 16
+    invalid_attempts_per_second: 32
+    invalid_tuple_mode: FROZEN_STRONG_ORACLE_CONDITIONED_REPEAT
+    false_positive_source: FROZEN_STRONG_ORACLE_CONDITIONED_TUPLES_V1
+    repeated_tuple_count: 16
+    minimum_replay_multiplicity: 100
+    direct_latency_comparison_permitted: true
+output_contract:
+  point_schema: traps-e11-preacher-formal-point-v1
+  trace_schema: traps-e11-preacher-formal-trace-v1
+  adapter_result_schema: traps-e11-matched-adapter-result-v1
+  immutable_directory_no_overwrite: true
+  required_bindings:
+    - manifest_id
+    - registration_id
+    - workload_name
+    - seed
+    - trace_id
+    - invalid_tuple_multiplicity_commitment_id
+    - minimum_invalid_tuple_multiplicity
+    - upstream_result_id
+    - repository_result_id
+execution:
+  result_status: NOT_RUN
+  require_clean_git: true
+  provenance_class: CANDIDATE_FORMAL_E11
+  maximum_concurrent_points_per_host: 1
+  paper_intended_derived_profile_executed: false
+  engineering_smoke_is_formal_result: false

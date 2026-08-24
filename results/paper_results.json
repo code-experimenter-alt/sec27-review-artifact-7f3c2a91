@@ -1,0 +1,73 @@
+{
+  "model": {
+    "canonical_states": 40104,
+    "transitions": 759640,
+    "login_transitions": 401040,
+    "randomized_transitions": 10000000,
+    "structural_false_rejects": 0
+  },
+  "loopback_fault_matrix": {
+    "conditions": 13,
+    "login_attempts": 24,
+    "valid_login_attempts": 22,
+    "structural_false_rejects": 0
+  },
+  "controlled_replay": {
+    "rows": 930,
+    "seeds": 10,
+    "maximum_cacheable_mismatches_per_tuple_episode": 1
+  },
+  "fixed_partition_optimizer": {
+    "instances": 10000,
+    "maximum_relative_objective_gap": 1.125e-9
+  },
+  "service": {
+    "paired_seeds_per_verifier": 20,
+    "legitimate_rps": 16,
+    "p99_invalid_rps": 32,
+    "sustainable_invalid_load": {
+      "pbkdf2_310k": {
+        "geometric_mean_ratio": 5.57801808120821,
+        "simultaneous_one_sided_lower_bound": 5.145132633497851
+      },
+      "argon2id_19mib": {
+        "geometric_mean_ratio": 4.333888872061299,
+        "simultaneous_one_sided_lower_bound": 3.7300170972619933
+      }
+    },
+    "legitimate_p99": {
+      "pbkdf2_310k": {
+        "geometric_mean_ratio": 0.3730369556080315,
+        "simultaneous_one_sided_upper_bound": 0.5263533876295667
+      },
+      "argon2id_19mib": {
+        "geometric_mean_ratio": 0.9467437443774346,
+        "simultaneous_one_sided_upper_bound": 1.0062079564389017
+      }
+    }
+  },
+  "failure_timing": {
+    "observations": 96000,
+    "comparisons": 20,
+    "comparisons_at_or_below_auc_boundary": 6,
+    "distinguishable_comparisons": 14,
+    "auc_upper_boundary": 0.55
+  },
+  "static_screen_timing": {
+    "configurations": 794,
+    "repetitions_per_primary_point": 40,
+    "points_exceeding_five_percent_half_width": 638,
+    "conclusion": "inconclusive"
+  },
+  "preacher_descriptive_comparison": {
+    "expected_points": 40,
+    "observed_points": 40,
+    "repository_mean_legitimate_p99_ms": 38.014160925,
+    "upstream_mean_legitimate_p99_ms": 90.8131577,
+    "repository_backend_invalid_checks": 1287,
+    "upstream_backend_invalid_checks": 11131,
+    "repository_request_mismatches": 0,
+    "upstream_request_mismatches": 120926,
+    "inferential_comparison": false
+  }
+}

@@ -1,0 +1,814 @@
+schema_version: 1
+scenario: E1_isolated_filter_timing_confirmation
+timing_stage: candidate_confirmation
+execution_enabled: true
+candidate_set_status: FROZEN
+candidate_set_id: e23c6e8625cf41e19eee9abff349ac3b62af28a30208631b095c1f30115eae43
+candidate_selection_rule: phase1_profile_memory_budget_ci_high_v1
+screening_measurements_used_for_favorable_selection: false
+confirmation_selection:
+  schema_version: 2
+  algorithm: phase1_profile_memory_budget_ci_high_v1
+  aggregate_summary_path: experiments/outputs/derived/filter_frontier_summary.csv
+  aggregate_audit_path: experiments/outputs/derived/filter_frontier_audit.json
+  expected_phase1_aggregate_identity: 1449c451bc2f6862881ce5b8fb52d584b6329ce088d3ca36a4981bc96c055da1
+  expected_phase1_source_commit: 782cbcf17db7959a1521764e26d2b4fa859142fc
+  profiles:
+  - U
+  - A
+  memory_budget_bits_per_account:
+  - 4
+  - 8
+  - 12
+  - 16
+  - 24
+  - 32
+  - 48
+  - 64
+  - 128
+  fixed_memory_overhead_bytes: 256
+  objective: minimize primary first-seen FFR 95% CI high, then total edge bytes, then method/spec identity
+  neighbor_rule: same profile and memory budget; adjacent tag_bits for tags, k_hashes at fixed Bloom method/bits_per_account,
+    or fingerprint_bits at fixed Xor/Cuckoo method
+  latency_match_contract:
+    schema_version: 1
+    primary_metric: frontend_warm_p99_us
+    paired_unit: measurement_trial_seed
+    estimand: geometric_mean_paired_seed_candidate_over_neighbor_warm_p99_ratio
+    candidate_role: budget_candidate
+    reference_role: matched_neighbor
+    noninferiority_ratio_margin: 1.05
+    familywise_alpha: 0.05
+    multiplicity_adjustment: bonferroni_one_sided_student_t_log_ratio_v1
+    multiplicity_family: all_frozen_candidate_matched_neighbor_relations
+    required_seed_count: 20
+    decision_rule: all_adjusted_upper_ratio_bounds_lte_margin
+    cold_p99_role: DESCRIPTIVE_ONLY
+    throughput_role: DESCRIPTIVE_ONLY
+    scope: PHASE1_FILTER_QUERY_ONLY_NOT_SERVICE_P99_OR_SLA
+  candidate_and_matched_neighbors:
+  - selection_key: profile-U-memory-4-bpa
+    role: budget_candidate
+    profile: U
+    memory_budget_bits_per_account: 4
+    memory_budget_total_edge_bytes: 50256
+    method: global_bloom
+    family: global_bloom
+    parameters: &id006
+      bits_per_account: 4
+      k_hashes: 3
+    spec_id: 99f520f5eef3f168edfccb230015f46b20cd6497502a17cd0019cd69834b5841
+    phase1_first_seen_ffr_ci_high: 0.14726351138286878
+    phase1_memory_total_edge_bytes_mean: 50088.0
+  - selection_key: profile-U-memory-4-bpa
+    role: matched_neighbor
+    profile: U
+    memory_budget_bits_per_account: 4
+    memory_budget_total_edge_bytes: 50256
+    method: global_bloom
+    family: global_bloom
+    parameters: &id007
+      bits_per_account: 4
+      k_hashes: 2
+    spec_id: 2c3cec1a02cae5ab01834701b54455520de0e063fabfd70374f57399759b9dcb
+    phase1_first_seen_ffr_ci_high: 0.15496953818945
+    phase1_memory_total_edge_bytes_mean: 50088.0
+    neighbor_direction: lower
+    anchor_candidate_spec_id: 99f520f5eef3f168edfccb230015f46b20cd6497502a17cd0019cd69834b5841
+  - selection_key: profile-U-memory-4-bpa
+    role: matched_neighbor
+    profile: U
+    memory_budget_bits_per_account: 4
+    memory_budget_total_edge_bytes: 50256
+    method: global_bloom
+    family: global_bloom
+    parameters: &id008
+      bits_per_account: 4
+      k_hashes: 4
+    spec_id: cccf0aad039297aedd06d1f6db0f6b57e155ccaa90bba5afb6b20fae36263e21
+    phase1_first_seen_ffr_ci_high: 0.16008448756794513
+    phase1_memory_total_edge_bytes_mean: 50088.0
+    neighbor_direction: upper
+    anchor_candidate_spec_id: 99f520f5eef3f168edfccb230015f46b20cd6497502a17cd0019cd69834b5841
+  - selection_key: profile-U-memory-8-bpa
+    role: budget_candidate
+    profile: U
+    memory_budget_bits_per_account: 8
+    memory_budget_total_edge_bytes: 100256
+    method: truncated_tag_8
+    family: tag
+    parameters: &id001
+      tag_bits: 8
+    spec_id: e68cccbe89da12b6faabfc86b6f695e1251486469763721c6524057532a679a9
+    phase1_first_seen_ffr_ci_high: 0.003946060124095451
+    phase1_memory_total_edge_bytes_mean: 100064.0
+  - selection_key: profile-U-memory-12-bpa
+    role: budget_candidate
+    profile: U
+    memory_budget_bits_per_account: 12
+    memory_budget_total_edge_bytes: 150256
+    method: truncated_tag_12
+    family: tag
+    parameters: &id002
+      tag_bits: 12
+    spec_id: a0c916aee76291fd6c725f58250b36c82112509e3696be046eb2015bb2f0b5e3
+    phase1_first_seen_ffr_ci_high: 0.00025255079095580605
+    phase1_memory_total_edge_bytes_mean: 150064.0
+  - selection_key: profile-U-memory-12-bpa
+    role: matched_neighbor
+    profile: U
+    memory_budget_bits_per_account: 12
+    memory_budget_total_edge_bytes: 150256
+    method: truncated_tag_8
+    family: tag
+    parameters: *id001
+    spec_id: e68cccbe89da12b6faabfc86b6f695e1251486469763721c6524057532a679a9
+    phase1_first_seen_ffr_ci_high: 0.003946060124095451
+    phase1_memory_total_edge_bytes_mean: 100064.0
+    neighbor_direction: lower
+    anchor_candidate_spec_id: a0c916aee76291fd6c725f58250b36c82112509e3696be046eb2015bb2f0b5e3
+  - selection_key: profile-U-memory-16-bpa
+    role: budget_candidate
+    profile: U
+    memory_budget_bits_per_account: 16
+    memory_budget_total_edge_bytes: 200256
+    method: truncated_tag_16
+    family: tag
+    parameters: &id012
+      tag_bits: 16
+    spec_id: d45ee8d8dbff443a2268fc75b606f260f34c764d32926111cf2a68e15f9b0d51
+    phase1_first_seen_ffr_ci_high: 1.760169371230441e-05
+    phase1_memory_total_edge_bytes_mean: 200064.0
+  - selection_key: profile-U-memory-16-bpa
+    role: matched_neighbor
+    profile: U
+    memory_budget_bits_per_account: 16
+    memory_budget_total_edge_bytes: 200256
+    method: truncated_tag_12
+    family: tag
+    parameters: *id002
+    spec_id: a0c916aee76291fd6c725f58250b36c82112509e3696be046eb2015bb2f0b5e3
+    phase1_first_seen_ffr_ci_high: 0.00025255079095580605
+    phase1_memory_total_edge_bytes_mean: 150064.0
+    neighbor_direction: lower
+    anchor_candidate_spec_id: d45ee8d8dbff443a2268fc75b606f260f34c764d32926111cf2a68e15f9b0d51
+  - selection_key: profile-U-memory-24-bpa
+    role: budget_candidate
+    profile: U
+    memory_budget_bits_per_account: 24
+    memory_budget_total_edge_bytes: 300256
+    method: truncated_tag_24
+    family: tag
+    parameters: &id003
+      tag_bits: 24
+    spec_id: c964b8385583ce1857fadbea9dc9f0079c1eaf3719c59a0cda6f911ac41f81f6
+    phase1_first_seen_ffr_ci_high: 3.6888787737224376e-07
+    phase1_memory_total_edge_bytes_mean: 300064.0
+  - selection_key: profile-U-memory-24-bpa
+    role: matched_neighbor
+    profile: U
+    memory_budget_bits_per_account: 24
+    memory_budget_total_edge_bytes: 300256
+    method: truncated_tag_20
+    family: tag
+    parameters: &id004
+      tag_bits: 20
+    spec_id: 9fd0c633090fc94068de0f283687ae70c229e56d90d46281295fb8ec8ae331cb
+    phase1_first_seen_ffr_ci_high: 1.5763183102126552e-06
+    phase1_memory_total_edge_bytes_mean: 250064.0
+    neighbor_direction: lower
+    anchor_candidate_spec_id: c964b8385583ce1857fadbea9dc9f0079c1eaf3719c59a0cda6f911ac41f81f6
+  - selection_key: profile-U-memory-32-bpa
+    role: budget_candidate
+    profile: U
+    memory_budget_bits_per_account: 32
+    memory_budget_total_edge_bytes: 400256
+    method: truncated_tag_24
+    family: tag
+    parameters: *id003
+    spec_id: c964b8385583ce1857fadbea9dc9f0079c1eaf3719c59a0cda6f911ac41f81f6
+    phase1_first_seen_ffr_ci_high: 3.6888787737224376e-07
+    phase1_memory_total_edge_bytes_mean: 300064.0
+  - selection_key: profile-U-memory-32-bpa
+    role: matched_neighbor
+    profile: U
+    memory_budget_bits_per_account: 32
+    memory_budget_total_edge_bytes: 400256
+    method: truncated_tag_20
+    family: tag
+    parameters: *id004
+    spec_id: 9fd0c633090fc94068de0f283687ae70c229e56d90d46281295fb8ec8ae331cb
+    phase1_first_seen_ffr_ci_high: 1.5763183102126552e-06
+    phase1_memory_total_edge_bytes_mean: 250064.0
+    neighbor_direction: lower
+    anchor_candidate_spec_id: c964b8385583ce1857fadbea9dc9f0079c1eaf3719c59a0cda6f911ac41f81f6
+  - selection_key: profile-U-memory-32-bpa
+    role: matched_neighbor
+    profile: U
+    memory_budget_bits_per_account: 32
+    memory_budget_total_edge_bytes: 400256
+    method: truncated_tag_32
+    family: tag
+    parameters: &id005
+      tag_bits: 32
+    spec_id: 1a03400b126fca2e202a933947faa8d97cf620113f62902daaeeafd43e919df1
+    phase1_first_seen_ffr_ci_high: 3.6888787737224376e-07
+    phase1_memory_total_edge_bytes_mean: 400064.0
+    neighbor_direction: upper
+    anchor_candidate_spec_id: c964b8385583ce1857fadbea9dc9f0079c1eaf3719c59a0cda6f911ac41f81f6
+  - selection_key: profile-U-memory-48-bpa
+    role: budget_candidate
+    profile: U
+    memory_budget_bits_per_account: 48
+    memory_budget_total_edge_bytes: 600256
+    method: truncated_tag_24
+    family: tag
+    parameters: *id003
+    spec_id: c964b8385583ce1857fadbea9dc9f0079c1eaf3719c59a0cda6f911ac41f81f6
+    phase1_first_seen_ffr_ci_high: 3.6888787737224376e-07
+    phase1_memory_total_edge_bytes_mean: 300064.0
+  - selection_key: profile-U-memory-48-bpa
+    role: matched_neighbor
+    profile: U
+    memory_budget_bits_per_account: 48
+    memory_budget_total_edge_bytes: 600256
+    method: truncated_tag_20
+    family: tag
+    parameters: *id004
+    spec_id: 9fd0c633090fc94068de0f283687ae70c229e56d90d46281295fb8ec8ae331cb
+    phase1_first_seen_ffr_ci_high: 1.5763183102126552e-06
+    phase1_memory_total_edge_bytes_mean: 250064.0
+    neighbor_direction: lower
+    anchor_candidate_spec_id: c964b8385583ce1857fadbea9dc9f0079c1eaf3719c59a0cda6f911ac41f81f6
+  - selection_key: profile-U-memory-48-bpa
+    role: matched_neighbor
+    profile: U
+    memory_budget_bits_per_account: 48
+    memory_budget_total_edge_bytes: 600256
+    method: truncated_tag_32
+    family: tag
+    parameters: *id005
+    spec_id: 1a03400b126fca2e202a933947faa8d97cf620113f62902daaeeafd43e919df1
+    phase1_first_seen_ffr_ci_high: 3.6888787737224376e-07
+    phase1_memory_total_edge_bytes_mean: 400064.0
+    neighbor_direction: upper
+    anchor_candidate_spec_id: c964b8385583ce1857fadbea9dc9f0079c1eaf3719c59a0cda6f911ac41f81f6
+  - selection_key: profile-U-memory-64-bpa
+    role: budget_candidate
+    profile: U
+    memory_budget_bits_per_account: 64
+    memory_budget_total_edge_bytes: 800256
+    method: truncated_tag_24
+    family: tag
+    parameters: *id003
+    spec_id: c964b8385583ce1857fadbea9dc9f0079c1eaf3719c59a0cda6f911ac41f81f6
+    phase1_first_seen_ffr_ci_high: 3.6888787737224376e-07
+    phase1_memory_total_edge_bytes_mean: 300064.0
+  - selection_key: profile-U-memory-64-bpa
+    role: matched_neighbor
+    profile: U
+    memory_budget_bits_per_account: 64
+    memory_budget_total_edge_bytes: 800256
+    method: truncated_tag_20
+    family: tag
+    parameters: *id004
+    spec_id: 9fd0c633090fc94068de0f283687ae70c229e56d90d46281295fb8ec8ae331cb
+    phase1_first_seen_ffr_ci_high: 1.5763183102126552e-06
+    phase1_memory_total_edge_bytes_mean: 250064.0
+    neighbor_direction: lower
+    anchor_candidate_spec_id: c964b8385583ce1857fadbea9dc9f0079c1eaf3719c59a0cda6f911ac41f81f6
+  - selection_key: profile-U-memory-64-bpa
+    role: matched_neighbor
+    profile: U
+    memory_budget_bits_per_account: 64
+    memory_budget_total_edge_bytes: 800256
+    method: truncated_tag_32
+    family: tag
+    parameters: *id005
+    spec_id: 1a03400b126fca2e202a933947faa8d97cf620113f62902daaeeafd43e919df1
+    phase1_first_seen_ffr_ci_high: 3.6888787737224376e-07
+    phase1_memory_total_edge_bytes_mean: 400064.0
+    neighbor_direction: upper
+    anchor_candidate_spec_id: c964b8385583ce1857fadbea9dc9f0079c1eaf3719c59a0cda6f911ac41f81f6
+  - selection_key: profile-U-memory-128-bpa
+    role: budget_candidate
+    profile: U
+    memory_budget_bits_per_account: 128
+    memory_budget_total_edge_bytes: 1600256
+    method: truncated_tag_24
+    family: tag
+    parameters: *id003
+    spec_id: c964b8385583ce1857fadbea9dc9f0079c1eaf3719c59a0cda6f911ac41f81f6
+    phase1_first_seen_ffr_ci_high: 3.6888787737224376e-07
+    phase1_memory_total_edge_bytes_mean: 300064.0
+  - selection_key: profile-U-memory-128-bpa
+    role: matched_neighbor
+    profile: U
+    memory_budget_bits_per_account: 128
+    memory_budget_total_edge_bytes: 1600256
+    method: truncated_tag_20
+    family: tag
+    parameters: *id004
+    spec_id: 9fd0c633090fc94068de0f283687ae70c229e56d90d46281295fb8ec8ae331cb
+    phase1_first_seen_ffr_ci_high: 1.5763183102126552e-06
+    phase1_memory_total_edge_bytes_mean: 250064.0
+    neighbor_direction: lower
+    anchor_candidate_spec_id: c964b8385583ce1857fadbea9dc9f0079c1eaf3719c59a0cda6f911ac41f81f6
+  - selection_key: profile-U-memory-128-bpa
+    role: matched_neighbor
+    profile: U
+    memory_budget_bits_per_account: 128
+    memory_budget_total_edge_bytes: 1600256
+    method: truncated_tag_32
+    family: tag
+    parameters: *id005
+    spec_id: 1a03400b126fca2e202a933947faa8d97cf620113f62902daaeeafd43e919df1
+    phase1_first_seen_ffr_ci_high: 3.6888787737224376e-07
+    phase1_memory_total_edge_bytes_mean: 400064.0
+    neighbor_direction: upper
+    anchor_candidate_spec_id: c964b8385583ce1857fadbea9dc9f0079c1eaf3719c59a0cda6f911ac41f81f6
+  - selection_key: profile-A-memory-4-bpa
+    role: budget_candidate
+    profile: A
+    memory_budget_bits_per_account: 4
+    memory_budget_total_edge_bytes: 50256
+    method: global_bloom
+    family: global_bloom
+    parameters: *id006
+    spec_id: 99f520f5eef3f168edfccb230015f46b20cd6497502a17cd0019cd69834b5841
+    phase1_first_seen_ffr_ci_high: 0.14726351138286878
+    phase1_memory_total_edge_bytes_mean: 50088.0
+  - selection_key: profile-A-memory-4-bpa
+    role: matched_neighbor
+    profile: A
+    memory_budget_bits_per_account: 4
+    memory_budget_total_edge_bytes: 50256
+    method: global_bloom
+    family: global_bloom
+    parameters: *id007
+    spec_id: 2c3cec1a02cae5ab01834701b54455520de0e063fabfd70374f57399759b9dcb
+    phase1_first_seen_ffr_ci_high: 0.15496953818945
+    phase1_memory_total_edge_bytes_mean: 50088.0
+    neighbor_direction: lower
+    anchor_candidate_spec_id: 99f520f5eef3f168edfccb230015f46b20cd6497502a17cd0019cd69834b5841
+  - selection_key: profile-A-memory-4-bpa
+    role: matched_neighbor
+    profile: A
+    memory_budget_bits_per_account: 4
+    memory_budget_total_edge_bytes: 50256
+    method: global_bloom
+    family: global_bloom
+    parameters: *id008
+    spec_id: cccf0aad039297aedd06d1f6db0f6b57e155ccaa90bba5afb6b20fae36263e21
+    phase1_first_seen_ffr_ci_high: 0.16008448756794513
+    phase1_memory_total_edge_bytes_mean: 50088.0
+    neighbor_direction: upper
+    anchor_candidate_spec_id: 99f520f5eef3f168edfccb230015f46b20cd6497502a17cd0019cd69834b5841
+  - selection_key: profile-A-memory-8-bpa
+    role: budget_candidate
+    profile: A
+    memory_budget_bits_per_account: 8
+    memory_budget_total_edge_bytes: 100256
+    method: global_bloom
+    family: global_bloom
+    parameters: &id013
+      bits_per_account: 8
+      k_hashes: 6
+    spec_id: 3d5d8a40e6b032b625c837382a1d253626551eb8f119b0e8815585fb949bf677
+    phase1_first_seen_ffr_ci_high: 0.02160775441339465
+    phase1_memory_total_edge_bytes_mean: 100088.0
+  - selection_key: profile-A-memory-8-bpa
+    role: matched_neighbor
+    profile: A
+    memory_budget_bits_per_account: 8
+    memory_budget_total_edge_bytes: 100256
+    method: global_bloom
+    family: global_bloom
+    parameters: &id014
+      bits_per_account: 8
+      k_hashes: 5
+    spec_id: 7f211e5a9f254d6ecf39a12fdb8d428de6c0ef63a6acea988fc721e1d7fcfb16
+    phase1_first_seen_ffr_ci_high: 0.021700547323370505
+    phase1_memory_total_edge_bytes_mean: 100088.0
+    neighbor_direction: lower
+    anchor_candidate_spec_id: 3d5d8a40e6b032b625c837382a1d253626551eb8f119b0e8815585fb949bf677
+  - selection_key: profile-A-memory-8-bpa
+    role: matched_neighbor
+    profile: A
+    memory_budget_bits_per_account: 8
+    memory_budget_total_edge_bytes: 100256
+    method: global_bloom
+    family: global_bloom
+    parameters: &id015
+      bits_per_account: 8
+      k_hashes: 7
+    spec_id: 060f7b05ca13e0b5ab2b115f2fca22e3eb4c4c182528b5098ee10fad53ad7051
+    phase1_first_seen_ffr_ci_high: 0.022960082468637413
+    phase1_memory_total_edge_bytes_mean: 100088.0
+    neighbor_direction: upper
+    anchor_candidate_spec_id: 3d5d8a40e6b032b625c837382a1d253626551eb8f119b0e8815585fb949bf677
+  - selection_key: profile-A-memory-12-bpa
+    role: budget_candidate
+    profile: A
+    memory_budget_bits_per_account: 12
+    memory_budget_total_edge_bytes: 150256
+    method: global_bloom
+    family: global_bloom
+    parameters: &id016
+      bits_per_account: 12
+      k_hashes: 8
+    spec_id: 27d6f443630eaf3267f4b044df826dba2e763e866e617246a8b0d354fcd50362
+    phase1_first_seen_ffr_ci_high: 0.0031580614108923937
+    phase1_memory_total_edge_bytes_mean: 150088.0
+  - selection_key: profile-A-memory-12-bpa
+    role: matched_neighbor
+    profile: A
+    memory_budget_bits_per_account: 12
+    memory_budget_total_edge_bytes: 150256
+    method: global_bloom
+    family: global_bloom
+    parameters: &id017
+      bits_per_account: 12
+      k_hashes: 7
+    spec_id: a5b66c47028128dbe4a4b14afc7a6f1143205bb90b71fc8f9e73fd90a4ca3b3a
+    phase1_first_seen_ffr_ci_high: 0.0033168623263351775
+    phase1_memory_total_edge_bytes_mean: 150088.0
+    neighbor_direction: lower
+    anchor_candidate_spec_id: 27d6f443630eaf3267f4b044df826dba2e763e866e617246a8b0d354fcd50362
+  - selection_key: profile-A-memory-12-bpa
+    role: matched_neighbor
+    profile: A
+    memory_budget_bits_per_account: 12
+    memory_budget_total_edge_bytes: 150256
+    method: global_bloom
+    family: global_bloom
+    parameters: &id018
+      bits_per_account: 12
+      k_hashes: 9
+    spec_id: 6c76eff691890c5b1f04e7702f55f04ae6388aa63d97ac5c8a8a405c6c37ffab
+    phase1_first_seen_ffr_ci_high: 0.00319788401540653
+    phase1_memory_total_edge_bytes_mean: 150088.0
+    neighbor_direction: upper
+    anchor_candidate_spec_id: 27d6f443630eaf3267f4b044df826dba2e763e866e617246a8b0d354fcd50362
+  - selection_key: profile-A-memory-16-bpa
+    role: budget_candidate
+    profile: A
+    memory_budget_bits_per_account: 16
+    memory_budget_total_edge_bytes: 200256
+    method: xor_static_3way
+    family: xor_static
+    parameters: &id019
+      capacity_factor: 1.23
+      fingerprint_bits: 12
+      max_attempts: 100
+    spec_id: 979a13e60b2c83c6f9ae6b3f936f6456adcd0ff1c24ce37269cc7825b4918d19
+    phase1_first_seen_ffr_ci_high: 0.00024526939500349795
+    phase1_memory_total_edge_bytes_mean: 184608.0
+  - selection_key: profile-A-memory-16-bpa
+    role: matched_neighbor
+    profile: A
+    memory_budget_bits_per_account: 16
+    memory_budget_total_edge_bytes: 200256
+    method: xor_static_3way
+    family: xor_static
+    parameters: &id020
+      capacity_factor: 1.23
+      fingerprint_bits: 8
+      max_attempts: 100
+    spec_id: fe4495894dfdf886651a332cf57300de3fec2765085c1c8a7889064c0a44dd74
+    phase1_first_seen_ffr_ci_high: 0.003919437587739676
+    phase1_memory_total_edge_bytes_mean: 123104.0
+    neighbor_direction: lower
+    anchor_candidate_spec_id: 979a13e60b2c83c6f9ae6b3f936f6456adcd0ff1c24ce37269cc7825b4918d19
+  - selection_key: profile-A-memory-24-bpa
+    role: budget_candidate
+    profile: A
+    memory_budget_bits_per_account: 24
+    memory_budget_total_edge_bytes: 300256
+    method: global_bloom
+    family: global_bloom
+    parameters: &id021
+      bits_per_account: 24
+      k_hashes: 16
+    spec_id: 81787d9f0679da05e2e80dcda9fa259cf68deebf746c49857e158bace9581aa4
+    phase1_first_seen_ffr_ci_high: 1.049284685546613e-05
+    phase1_memory_total_edge_bytes_mean: 300088.0
+  - selection_key: profile-A-memory-24-bpa
+    role: matched_neighbor
+    profile: A
+    memory_budget_bits_per_account: 24
+    memory_budget_total_edge_bytes: 300256
+    method: global_bloom
+    family: global_bloom
+    parameters: &id022
+      bits_per_account: 24
+      k_hashes: 15
+    spec_id: 68d2adc76235dec2e2c5ecd26c677124c85eeb6dfa9c6f1c4efe2feda9aaf45f
+    phase1_first_seen_ffr_ci_high: 1.2111983460149365e-05
+    phase1_memory_total_edge_bytes_mean: 300088.0
+    neighbor_direction: lower
+    anchor_candidate_spec_id: 81787d9f0679da05e2e80dcda9fa259cf68deebf746c49857e158bace9581aa4
+  - selection_key: profile-A-memory-24-bpa
+    role: matched_neighbor
+    profile: A
+    memory_budget_bits_per_account: 24
+    memory_budget_total_edge_bytes: 300256
+    method: global_bloom
+    family: global_bloom
+    parameters: &id023
+      bits_per_account: 24
+      k_hashes: 17
+    spec_id: 54ac6531acb791490b7d2d53886d46481130c5a8e7fb1024a54fc3ed0285a888
+    phase1_first_seen_ffr_ci_high: 1.1453524673879857e-05
+    phase1_memory_total_edge_bytes_mean: 300088.0
+    neighbor_direction: upper
+    anchor_candidate_spec_id: 81787d9f0679da05e2e80dcda9fa259cf68deebf746c49857e158bace9581aa4
+  - selection_key: profile-A-memory-32-bpa
+    role: budget_candidate
+    profile: A
+    memory_budget_bits_per_account: 32
+    memory_budget_total_edge_bytes: 400256
+    method: xor_static_3way
+    family: xor_static
+    parameters: &id009
+      capacity_factor: 1.23
+      fingerprint_bits: 24
+      max_attempts: 100
+    spec_id: a01a9095cd826e1fa64640a602864432645ac2cfc33e0fe6e6a0f4235361bfa1
+    phase1_first_seen_ffr_ci_high: 1.457813270737047e-07
+    phase1_memory_total_edge_bytes_mean: 369104.0
+  - selection_key: profile-A-memory-32-bpa
+    role: matched_neighbor
+    profile: A
+    memory_budget_bits_per_account: 32
+    memory_budget_total_edge_bytes: 400256
+    method: xor_static_3way
+    family: xor_static
+    parameters: &id024
+      capacity_factor: 1.23
+      fingerprint_bits: 20
+      max_attempts: 100
+    spec_id: 380ce66991ab94fd2502f7de7d886a5b5cff3c07c9b715cafa91472e56cbe7c3
+    phase1_first_seen_ffr_ci_high: 1.0892120814930464e-06
+    phase1_memory_total_edge_bytes_mean: 307608.0
+    neighbor_direction: lower
+    anchor_candidate_spec_id: a01a9095cd826e1fa64640a602864432645ac2cfc33e0fe6e6a0f4235361bfa1
+  - selection_key: profile-A-memory-48-bpa
+    role: budget_candidate
+    profile: A
+    memory_budget_bits_per_account: 48
+    memory_budget_total_edge_bytes: 600256
+    method: xor_static_3way
+    family: xor_static
+    parameters: &id010
+      capacity_factor: 1.23
+      fingerprint_bits: 32
+      max_attempts: 100
+    spec_id: c9c2102d8a9714c935d36b1ce771acbd58f61d2586eab198b6a5409aab6b911a
+    phase1_first_seen_ffr_ci_high: 3.6888793860747784e-08
+    phase1_memory_total_edge_bytes_mean: 492104.0
+  - selection_key: profile-A-memory-48-bpa
+    role: matched_neighbor
+    profile: A
+    memory_budget_bits_per_account: 48
+    memory_budget_total_edge_bytes: 600256
+    method: xor_static_3way
+    family: xor_static
+    parameters: *id009
+    spec_id: a01a9095cd826e1fa64640a602864432645ac2cfc33e0fe6e6a0f4235361bfa1
+    phase1_first_seen_ffr_ci_high: 1.457813270737047e-07
+    phase1_memory_total_edge_bytes_mean: 369104.0
+    neighbor_direction: lower
+    anchor_candidate_spec_id: c9c2102d8a9714c935d36b1ce771acbd58f61d2586eab198b6a5409aab6b911a
+  - selection_key: profile-A-memory-64-bpa
+    role: budget_candidate
+    profile: A
+    memory_budget_bits_per_account: 64
+    memory_budget_total_edge_bytes: 800256
+    method: xor_static_3way
+    family: xor_static
+    parameters: *id010
+    spec_id: c9c2102d8a9714c935d36b1ce771acbd58f61d2586eab198b6a5409aab6b911a
+    phase1_first_seen_ffr_ci_high: 3.6888793860747784e-08
+    phase1_memory_total_edge_bytes_mean: 492104.0
+  - selection_key: profile-A-memory-64-bpa
+    role: matched_neighbor
+    profile: A
+    memory_budget_bits_per_account: 64
+    memory_budget_total_edge_bytes: 800256
+    method: xor_static_3way
+    family: xor_static
+    parameters: *id009
+    spec_id: a01a9095cd826e1fa64640a602864432645ac2cfc33e0fe6e6a0f4235361bfa1
+    phase1_first_seen_ffr_ci_high: 1.457813270737047e-07
+    phase1_memory_total_edge_bytes_mean: 369104.0
+    neighbor_direction: lower
+    anchor_candidate_spec_id: c9c2102d8a9714c935d36b1ce771acbd58f61d2586eab198b6a5409aab6b911a
+  - selection_key: profile-A-memory-64-bpa
+    role: matched_neighbor
+    profile: A
+    memory_budget_bits_per_account: 64
+    memory_budget_total_edge_bytes: 800256
+    method: xor_static_3way
+    family: xor_static
+    parameters: &id011
+      capacity_factor: 1.23
+      fingerprint_bits: 48
+      max_attempts: 100
+    spec_id: 5c06666749bbad210f489738df1e56c5dbc1160e4a85537aab1fe2e00e19cc87
+    phase1_first_seen_ffr_ci_high: 3.6888793860747784e-08
+    phase1_memory_total_edge_bytes_mean: 738104.0
+    neighbor_direction: upper
+    anchor_candidate_spec_id: c9c2102d8a9714c935d36b1ce771acbd58f61d2586eab198b6a5409aab6b911a
+  - selection_key: profile-A-memory-128-bpa
+    role: budget_candidate
+    profile: A
+    memory_budget_bits_per_account: 128
+    memory_budget_total_edge_bytes: 1600256
+    method: xor_static_3way
+    family: xor_static
+    parameters: *id010
+    spec_id: c9c2102d8a9714c935d36b1ce771acbd58f61d2586eab198b6a5409aab6b911a
+    phase1_first_seen_ffr_ci_high: 3.6888793860747784e-08
+    phase1_memory_total_edge_bytes_mean: 492104.0
+  - selection_key: profile-A-memory-128-bpa
+    role: matched_neighbor
+    profile: A
+    memory_budget_bits_per_account: 128
+    memory_budget_total_edge_bytes: 1600256
+    method: xor_static_3way
+    family: xor_static
+    parameters: *id009
+    spec_id: a01a9095cd826e1fa64640a602864432645ac2cfc33e0fe6e6a0f4235361bfa1
+    phase1_first_seen_ffr_ci_high: 1.457813270737047e-07
+    phase1_memory_total_edge_bytes_mean: 369104.0
+    neighbor_direction: lower
+    anchor_candidate_spec_id: c9c2102d8a9714c935d36b1ce771acbd58f61d2586eab198b6a5409aab6b911a
+  - selection_key: profile-A-memory-128-bpa
+    role: matched_neighbor
+    profile: A
+    memory_budget_bits_per_account: 128
+    memory_budget_total_edge_bytes: 1600256
+    method: xor_static_3way
+    family: xor_static
+    parameters: *id011
+    spec_id: 5c06666749bbad210f489738df1e56c5dbc1160e4a85537aab1fe2e00e19cc87
+    phase1_first_seen_ffr_ci_high: 3.6888793860747784e-08
+    phase1_memory_total_edge_bytes_mean: 738104.0
+    neighbor_direction: upper
+    anchor_candidate_spec_id: c9c2102d8a9714c935d36b1ce771acbd58f61d2586eab198b6a5409aab6b911a
+formal_timing: true
+require_clean_git: true
+seeds:
+- 104729
+- 130363
+- 155921
+- 181081
+- 205759
+- 230411
+- 255053
+- 279709
+- 304349
+- 329041
+- 353869
+- 378599
+- 403339
+- 428083
+- 452827
+- 477571
+- 502321
+- 527053
+- 551797
+- 576533
+dataset:
+  seed: 20260805
+  account_count: 100000
+  nonmember_count: 10000000
+timing:
+  declared_benchmark_process_concurrency: 1
+  require_single_cpu_affinity: true
+  require_exclusive_host: true
+  query_pool_count: 100000
+  warmup_query_count: 100000
+  warm_throughput_query_count: 1000000
+  warm_throughput_repetitions: 5
+  warm_latency_query_count: 100000
+  cold_latency_query_count: 2000
+  cold_eviction_bytes: 150994944
+  cold_eviction_minimum_llc_multiple: 4
+  query_window_assignment: disjoint_stage_seed_windows_v1
+  point_ordering: sha256_base_permutation_coprime_rotation_v1
+  formal_shard_count: 480
+methods:
+  exact_tag: true
+  truncated_tags:
+    bits:
+    - 8
+    - 12
+    - 16
+    - 20
+    - 24
+    - 32
+    - 64
+  global_bloom:
+    bits_per_account:
+    - 4
+    - 8
+    - 12
+    - 16
+    - 24
+    - 32
+    - 48
+    - 64
+    k_min: 1
+    k_max: 48
+  blocked_bloom:
+    bits_per_account:
+    - 4
+    - 8
+    - 12
+    - 16
+    - 24
+    - 32
+    - 48
+    - 64
+    k_min: 1
+    k_max: 48
+  xor_static:
+    fingerprint_bits:
+    - 4
+    - 8
+    - 12
+    - 16
+    - 20
+    - 24
+    - 32
+    - 48
+    - 64
+    capacity_factor: 1.23
+    max_attempts: 100
+  cuckoo:
+    fingerprint_bits:
+    - 4
+    - 8
+    - 12
+    - 16
+    - 20
+    - 24
+    - 32
+    - 48
+    - 64
+    bucket_size: 4
+    target_load: 0.9
+    max_kicks: 500
+    max_seed_attempts: 20
+selected_specs:
+- family: global_bloom
+  parameters: *id006
+- family: global_bloom
+  parameters: *id007
+- family: global_bloom
+  parameters: *id008
+- family: tag
+  parameters: *id001
+- family: tag
+  parameters: *id002
+- family: tag
+  parameters: *id012
+- family: tag
+  parameters: *id003
+- family: tag
+  parameters: *id004
+- family: tag
+  parameters: *id005
+- family: global_bloom
+  parameters: *id013
+- family: global_bloom
+  parameters: *id014
+- family: global_bloom
+  parameters: *id015
+- family: global_bloom
+  parameters: *id016
+- family: global_bloom
+  parameters: *id017
+- family: global_bloom
+  parameters: *id018
+- family: xor_static
+  parameters: *id019
+- family: xor_static
+  parameters: *id020
+- family: global_bloom
+  parameters: *id021
+- family: global_bloom
+  parameters: *id022
+- family: global_bloom
+  parameters: *id023
+- family: xor_static
+  parameters: *id009
+- family: xor_static
+  parameters: *id024
+- family: xor_static
+  parameters: *id010
+- family: xor_static
+  parameters: *id011
+output: experiments/outputs/raw/filter_timing/confirmation/filter_timing_E1.confirmation.jsonl

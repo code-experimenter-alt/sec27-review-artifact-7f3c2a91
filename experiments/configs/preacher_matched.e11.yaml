@@ -1,0 +1,109 @@
+schema: traps-e11-preacher-matched-load-manifest-v2
+status: ENGINEERING_SMOKE_IMPLEMENTED_NOT_ADJUDICABLE
+source:
+  repository: https://github.com/SHiftLin/NSDI2025-PreAcher.git
+  revision: 5a083ceea001b002187d9d4b5a26371be061f1cc
+  redistribution: RETRIEVE_ONLY_NO_BUNDLING
+preacher_profiles:
+  upstream_as_released:
+    source_class: UPSTREAM_AS_RELEASED
+    implementation_status: BUILT_AND_PROTOCOL_SMOKED_ONLY
+    kmer_k: 5
+    weighted_minhash: true
+    minhash_key_mode: CONSTANT_LITERAL
+    minhash_key_literal: 42
+    failure_cutoff_q: null
+  paper_intended_derived:
+    source_class: DERIVED_NOT_UPSTREAM
+    implementation_status: NOT_IMPLEMENTED
+    kmer_k: 4
+    weighted_minhash: true
+    minhash_key_mode: USER_BOUND_HMAC
+    minhash_key_literal: null
+    failure_cutoff_q: 20
+active_preacher_profile: upstream_as_released
+derived_baseline_binding:
+  schema: traps-e11-phase1-v2-derived-baseline-binding-v1
+  protocol: phase1_timing_frontier_v2_1
+  status: PENDING_PHASE1_V2_1_POSTRUN_RECEIPT
+  expected_receipt_schema: traps-phase1-timing-frontier-v2-postrun-receipt-v2
+  selection_contract_path: experiments/configs/phase1_v21_downstream_selection.yaml
+  selection_contract_id: 9721fc00a36dff19d3f56727c7c41fda41dc95a0e9ecac8d49e5f002adb536c2
+  registration_artifact_path: null
+  registration_id: null
+  receipt_path: null
+  receipt_id: null
+  aggregate_path: null
+  aggregate_id: null
+  selected_profile: null
+  selected_spec_id: null
+  selected_spec_identity: null
+  selected_filter: null
+  selection_policy: ABSOLUTE_BUDGET_STRONGEST_CONSERVATIVE_FRONTIER_V1
+matched_contract:
+  arrival_unit: authentication_attempt
+  arrival_mode: open_loop
+  schedule: deterministic_interleaved
+  seed: 20260811
+  duration_seconds: 2
+  legitimate_attempts_per_second: 2
+  invalid_attempts_per_second: 3
+  account_count: 16
+  account_concurrency_policy: UNIQUE_ACCOUNT_PER_ATTEMPT
+  credential_sequence: DETERMINISTIC_SHARED_VALID_AND_DISTINCT_INVALID
+  kdf:
+    algorithm: pbkdf2_hmac_sha256
+    iterations: 10000
+    salt_bytes: 32
+    output_bytes: 256
+  workers:
+    load_generator: 1
+    frontend_handler: 20
+    origin_kdf_handler: 20
+methods:
+  - name: preacher_upstream_as_released
+    system_profile: upstream_as_released
+    adapter_status: IMPLEMENTED_RELEASED_PROTOCOL_ADAPTER
+    arrival_trace_binding: HARNESS_GENERATED_SINGLE_ATTEMPT_TRACE
+    kdf:
+      algorithm: pbkdf2_hmac_sha256
+      iterations: 10000
+      salt_bytes: 32
+      output_bytes: 256
+    workers:
+      load_generator: 1
+      frontend_handler: 20
+      origin_kdf_handler: 20
+  - name: r_traps_released_kdf_profile
+    system_profile: r_traps_matched_released_kdf
+    adapter_status: IMPLEMENTED_REPOSITORY_ADAPTER_PENDING_PHASE1_BASELINE
+    arrival_trace_binding: HARNESS_GENERATED_SINGLE_ATTEMPT_TRACE
+    kdf:
+      algorithm: pbkdf2_hmac_sha256
+      iterations: 10000
+      salt_bytes: 32
+      output_bytes: 256
+    workers:
+      load_generator: 1
+      frontend_handler: 20
+      origin_kdf_handler: 20
+report_contract:
+  required_metrics:
+    - backend_invalid_checks
+    - checks_per_distinct_invalid_tuple
+    - legitimate_throughput_rps
+    - legitimate_p99_ms
+    - legitimate_timeout_rate
+    - saturation_interval
+    - frontend_cpu_seconds
+    - frontend_peak_rss_bytes
+    - origin_cpu_seconds
+    - origin_peak_rss_bytes
+    - protocol_http_requests
+    - rsa_operations
+    - two_round_attempts
+execution:
+  phase: ENGINEERING_SMOKE
+  result_status: NOT_ADJUDICABLE
+  adapters: IMPLEMENTED
+  matched_load: IMPLEMENTED_ENGINEERING_SMOKE

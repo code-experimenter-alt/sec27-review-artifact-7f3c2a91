@@ -1,0 +1,50 @@
+schema_version: 1
+scenario: E1_isolated_filter_timing_screening
+timing_stage: all_spec_screening
+execution_enabled: true
+formal_timing: true
+require_clean_git: true
+# This screening seed is disjoint from every confirmation seed.
+seeds: [641051]
+dataset:
+  seed: 20260805
+  account_count: 100000
+  nonmember_count: 10000000
+timing:
+  declared_benchmark_process_concurrency: 1
+  require_single_cpu_affinity: true
+  require_exclusive_host: true
+  query_pool_count: 100000
+  warmup_query_count: 100000
+  warm_throughput_query_count: 1000000
+  warm_throughput_repetitions: 5
+  warm_latency_query_count: 100000
+  cold_latency_query_count: 2000
+  cold_eviction_bytes: 150994944
+  cold_eviction_minimum_llc_multiple: 4
+  query_window_assignment: disjoint_stage_seed_windows_v1
+  point_ordering: sha256_base_permutation_coprime_rotation_v1
+  formal_shard_count: 794
+methods:
+  exact_tag: true
+  truncated_tags:
+    bits: [8, 12, 16, 20, 24, 32, 64]
+  global_bloom:
+    bits_per_account: [4, 8, 12, 16, 24, 32, 48, 64]
+    k_min: 1
+    k_max: 48
+  blocked_bloom:
+    bits_per_account: [4, 8, 12, 16, 24, 32, 48, 64]
+    k_min: 1
+    k_max: 48
+  xor_static:
+    fingerprint_bits: [4, 8, 12, 16, 20, 24, 32, 48, 64]
+    capacity_factor: 1.23
+    max_attempts: 100
+  cuckoo:
+    fingerprint_bits: [4, 8, 12, 16, 20, 24, 32, 48, 64]
+    bucket_size: 4
+    target_load: 0.90
+    max_kicks: 500
+    max_seed_attempts: 20
+output: experiments/outputs/raw/filter_timing/screening/filter_timing_E1.screening.jsonl

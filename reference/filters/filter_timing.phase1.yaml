@@ -1,0 +1,43 @@
+schema_version: 1
+scenario: E1_isolated_filter_timing_pilot
+timing_stage: pilot
+execution_enabled: true
+formal_timing: false
+require_clean_git: false
+# A non-claim pilot used only to estimate per-row duration and eviction traffic.
+seeds: [615997]
+dataset:
+  seed: 20260805
+  account_count: 100000
+  nonmember_count: 10000000
+timing:
+  declared_benchmark_process_concurrency: 1
+  require_single_cpu_affinity: false
+  require_exclusive_host: false
+  query_pool_count: 10000
+  warmup_query_count: 10000
+  warm_throughput_query_count: 100000
+  warm_throughput_repetitions: 3
+  warm_latency_query_count: 10000
+  cold_latency_query_count: 100
+  cold_eviction_bytes: 134217728
+methods:
+  exact_tag: true
+  truncated_tags: false
+  global_bloom:
+    bits_per_account: [16]
+    k_values: [11]
+  blocked_bloom:
+    bits_per_account: [16]
+    k_values: [11]
+  xor_static:
+    fingerprint_bits: [16]
+    capacity_factor: 1.23
+    max_attempts: 100
+  cuckoo:
+    fingerprint_bits: [16]
+    bucket_size: 4
+    target_load: 0.90
+    max_kicks: 500
+    max_seed_attempts: 20
+output: experiments/outputs/raw/filter_timing/pilot/filter_timing_E1.pilot.jsonl

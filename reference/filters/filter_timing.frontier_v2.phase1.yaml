@@ -1,0 +1,210 @@
+schema_version: 3
+scenario: E1_E2_complete_timing_aware_frontier_v2_1
+protocol: phase1_timing_frontier_v2_1
+execution_enabled: true
+formal_timing: true
+require_clean_git: true
+source_commit_binding: CLI_EXPECTED_SOURCE_COMMIT_REQUIRED
+
+source_evidence:
+  mode: REUSE_FROZEN_794_UNCHANGED_FILTER_SEMANTICS
+  filter_grid_commit: 782cbcf17db7959a1521764e26d2b4fa859142fc
+  filter_grid_semantic_config_id: 38c20f538643106159a799deb90c78e6c909934e3858b163ae2c56ea3438bade
+  filter_grid_semantic_dataset_id: 0e0299a7367c6a115e077440e7a04936712b654a1e0a836785d3e6862ac34a4a
+  filter_grid_attestation_id: ff2d7c3d8d4b6356f26d4cf7aeee051257f6b81712a3d89695205204bd521dfa
+  filter_grid_raw_row_count: 7868
+  filter_grid_shard_count: 36
+  filter_grid_spec_count: 794
+  filter_grid_aggregate_identity_schema: phase1-selection-aggregate-v2
+  filter_grid_aggregate_identity: 1449c451bc2f6862881ce5b8fb52d584b6329ce088d3ca36a4981bc96c055da1
+  randomized_constructions_per_spec: 10
+  randomized_first_seen_interval: outer_envelope_cluster_t95_and_pooled_clopper_pearson95
+  static_tag_constructions_per_spec: 1
+  static_tag_first_seen_interval: pooled_clopper_pearson_exact95
+  per_construction_interval: wilson_score95
+  diagnostic_schema_version: 3
+  diagnostic_protocol: phase1-independent-bloom-query-path-reproduction-v4
+  diagnostic_source_commit: 6dcbaaa9748f4e5f8b1e9fbaf9bd7d31ccc9678e
+  diagnostic_config_id: dd0193c424468553b21101122e2b513dabae5800e5d3f6c46d024afd1294294e
+  diagnostic_family_size: 7680
+  diagnostic_robust_overlap_count: 7680
+  diagnostic_robust_separation_count: 0
+  diagnostic_ambiguous_count: 0
+  diagnostic_target_attestation_id: ff2d7c3d8d4b6356f26d4cf7aeee051257f6b81712a3d89695205204bd521dfa
+  immutable_v1_timing_commit: 4097f2b8555238b79253b506f61d3fb473b51d74
+  immutable_v1_timing_semantic_config_id: cdddd91c24b008b37d5c833b127f08d94c8d20546b5f1673a38617a18b4037f9
+  immutable_v1_candidate_set_id: e23c6e8625cf41e19eee9abff349ac3b62af28a30208631b095c1f30115eae43
+  immutable_v1_raw_observation_set_sha256: 77e081baf406dd130daa3cd4775ce08ee317580363d61d234afb7c4f32ce8b2b
+  immutable_v1_timing_claim_gate: FAIL_PHASE1_SCREENING_LATENCY_ELIGIBILITY
+  immutable_v1_relation_count: 28
+  immutable_v1_pass_count: 24
+  immutable_v1_fail_count: 3
+  immutable_v1_indeterminate_count: 1
+  semantic_change_action: RERUN_FULL_7868_ROW_FUNCTIONAL_FFR_GRID
+
+corpus_equivalence:
+  receipt_schema: traps-phase1-v2-corpus-equivalence-receipt-v1
+  receipt_id_schema: phase1-v2-corpus-equivalence-id-v1
+  member_count: 100000
+  nonmember_count: 13000000
+  verification: every_member_and_every_nonmember_public_api_vs_frozen_formula
+  required_for_every_timing_shard: true
+
+construction_feasibility:
+  receipt_schema: traps-phase1-v2-construction-feasibility-receipt-v1
+  receipt_id_schema: phase1-v2-construction-feasibility-id-v1
+  families: [xor_static, cuckoo]
+  spec_count: 18
+  seed_count: 41
+  build_count: 738
+  member_validation_count_per_build: 100000
+  maximum_member_false_negatives: 0
+  action_on_any_failure: VERSION_NEW_PROTOCOL_BEFORE_ANY_FORMAL_TIMING_ROW
+  required_for_every_timing_shard: true
+
+dataset:
+  generator: phase1-exact-bytes-v1
+  seed: 20260813
+  account_count: 100000
+  nonmember_count: 13000000
+  semantic_dataset_id: 94fac88de13e9808962f6970c4a7865aa56c805b09003d90eb5de262043d4551
+
+warm:
+  look1_seeds:
+    - 2700004
+    - 2725012
+    - 2750022
+    - 2775010
+    - 2800014
+    - 2825004
+    - 2850012
+    - 2875014
+    - 2900004
+    - 2925022
+    - 2950012
+    - 2975014
+    - 3000006
+    - 3025012
+    - 3050014
+    - 3075010
+    - 3100012
+    - 3125004
+    - 3150030
+    - 3175006
+  look2_seeds:
+    - 3225012
+    - 3250006
+    - 3275014
+    - 3300024
+    - 3325014
+    - 3350004
+    - 3375010
+    - 3400020
+    - 3425010
+    - 3450022
+    - 3475006
+    - 3500010
+    - 3525024
+    - 3550030
+    - 3575014
+    - 3600036
+    - 3625020
+    - 3650004
+    - 3675004
+    - 3700024
+  shard_count_per_look: 20
+  specs_per_seed_shard: 794
+  query_window_stride: 300000
+  query_pool_count: 100000
+  warmup_query_count: 100000
+  actual_front_throughput_query_count: 100000
+  actual_front_throughput_repetitions: 5
+  actual_front_latency_query_count: 100000
+  query_only_latency_query_count: 100000
+  preflight_query_count: 1024
+  point_ordering: sha256_base_permutation_coprime_rotation_251_v2
+  path_counterbalance: even_global_seed_ordinal_actual_first_odd_query_only_first
+  precision_metric: indexed_directory_to_screen_decision_warm_p99_us
+  precision_scale: log
+  precision_relative_half_width_max: 0.05
+  precision_interval: two_sided_student_t_log_p99
+  precision_relative_half_width: max_upper_over_gm_minus_one_and_one_minus_lower_over_gm
+  precision_familywise_alpha: 0.05
+  precision_look_alpha: 0.025
+  uncertain_coordinate_families_per_look: 2
+  simultaneous_coordinate_alpha: 0.000015743073047858943
+  look2_trigger: ANY_OF_794_LOOK1_POINTS_EXCEEDS_PRECISION_TARGET
+  look1_decision_rule: hardware_stratum_then_timer_resolution_then_precision_v2
+  look1_extension_decision_receipt_schema: traps-phase1-v2-look1-extension-decision-v2
+  look1_extension_decision_id_schema: phase1-v2-look1-extension-decision-id-v2
+  look1_extension_decision_binding: CLI_PATH_AND_EXPECTED_ID_REQUIRED
+  maximum_trial_count: 40
+  extension_rule: FULL_794_POINT_SECOND_20_SEED_BLOCK_ONLY
+
+cold:
+  seeds: [3200010]
+  shard_count: 8
+  spec_partition: contiguous_floor_boundaries_over_frozen_base_order
+  query_window_start: 12000000
+  query_only_latency_query_count: 2000
+  eviction_bytes: 150994944
+  eviction_minimum_llc_multiple: 4
+  eviction_method: zlib_crc32_native_full_buffer_read_before_each_query
+  claim_scope: QUERY_ONLY_SOFTWARE_CACHE_DISPLACEMENT_DIAGNOSTIC
+
+timing:
+  declared_benchmark_process_concurrency: 1
+  require_single_cpu_affinity: true
+  require_exclusive_host: true
+  clock: time.perf_counter_ns
+  clock_call_pattern: one_call_immediately_before_and_after_each_timed_query
+  clock_call_overhead_measurement: back_to_back_perf_counter_ns_delta
+  clock_call_overhead_sample_count: 100000
+  require_monotonic_clock: true
+  minimum_primary_p99_to_clock_call_p99_ratio: 10.0
+  cold_eviction_bytes: 150994944
+  cold_eviction_minimum_llc_multiple: 4
+
+frontier:
+  profiles: [U, A]
+  profile_u_eligibility: ALL_794_STATIC_FILTER_SPECS
+  profile_a_eligibility: AGGREGATE_FILTERS_ONLY_EXCLUDES_PER_ACCOUNT_TAGS
+  objectives: [memory_total_edge_bytes, first_seen_ffr, actual_front_warm_p99]
+  dominance: all_objectives_lte_and_at_least_one_strict_lt_within_profile
+  primary_membership: simultaneous_confidence_conservative_nondominated_set
+  secondary_membership: descriptive_complete_grid_point_estimate_pareto
+  ffr_interval_randomized: adjusted_raw_scale_construction_t_and_pooled_cp_outer_envelope
+  ffr_interval_static_tag: adjusted_pooled_clopper_pearson
+  timing_interval: adjusted_log_scale_student_t_over_seed_p99
+  conservative_dominance: memory_lte_and_ffr_upper_lte_lower_and_timing_upper_lte_lower_one_strict
+  gate: complete_valid_reconstructable_actual_front_grid_and_precision_target
+  multiplicity: two_looks_by_two_uncertain_coordinates_by_794_bonferroni
+
+methods:
+  exact_tag: true
+  truncated_tags:
+    bits: [8, 12, 16, 20, 24, 32, 64]
+  global_bloom:
+    bits_per_account: [4, 8, 12, 16, 24, 32, 48, 64]
+    k_min: 1
+    k_max: 48
+  blocked_bloom:
+    bits_per_account: [4, 8, 12, 16, 24, 32, 48, 64]
+    k_min: 1
+    k_max: 48
+  xor_static:
+    fingerprint_bits: [4, 8, 12, 16, 20, 24, 32, 48, 64]
+    capacity_factor: 1.23
+    max_attempts: 100
+  cuckoo:
+    fingerprint_bits: [4, 8, 12, 16, 20, 24, 32, 48, 64]
+    bucket_size: 4
+    target_load: 0.90
+    max_kicks: 500
+    max_seed_attempts: 20
+
+outputs:
+  root: experiments/outputs/raw/filter_timing_frontier_v2_1
+  warm_look1_pattern: warm-look1/filter_timing_frontier_v2_1.warm-look1.shard-{index:04d}-of-0020.jsonl
+  warm_look2_pattern: warm-look2/filter_timing_frontier_v2_1.warm-look2.shard-{index:04d}-of-0020.jsonl
+  cold_pattern: cold/filter_timing_frontier_v2_1.cold.shard-{index:04d}-of-0008.jsonl

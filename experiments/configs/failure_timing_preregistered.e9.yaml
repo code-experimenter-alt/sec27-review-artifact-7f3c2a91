@@ -1,0 +1,495 @@
+schema: traps-e9-failure-timing-config-v5-preregistered-clean-run
+experiment_id: e9-loopback-failure-timing-v1
+main_claims_manifest_id: sha256:68d8fc2158f2423123e70d6c1735ebae6ee1df6eceb947bb2d4f3a65c978c617
+default_profile: smoke
+failure_cases:
+  - unknown_username
+  - positive_screen_negative
+  - negative_cache_hit
+  - backend_mismatch
+  - transient_backend_failure
+functional_cases:
+  - valid_password
+failure_case_contracts:
+  unknown_username:
+    precondition: DIRECTORY_MISS_WITH_DUMMY_NO_ACCOUNT_VERIFIER_PATH
+    route: FAIL_OPEN_BACKEND
+    accepted: false
+    backend_kind: NO_ACCOUNT
+    backend_calls: 1
+    kdf_calls: 1
+    cache_hits: 0
+    screen_negatives: 0
+    response_status: 401
+    response_body: authentication failed
+  positive_screen_negative:
+    precondition: KNOWN_ACCOUNT_POSITIVE_SCREEN_NEGATIVE
+    route: POSITIVE_SCREEN_REJECT
+    accepted: false
+    backend_kind: null
+    backend_calls: 0
+    kdf_calls: 0
+    cache_hits: 0
+    screen_negatives: 1
+    response_status: 401
+    response_body: authentication failed
+  negative_cache_hit:
+    precondition: KNOWN_ACCOUNT_PREWARMED_EXACT_NEGATIVE_CACHE_HIT
+    route: NEGATIVE_CACHE_REJECT
+    accepted: false
+    backend_kind: null
+    backend_calls: 0
+    kdf_calls: 0
+    cache_hits: 1
+    screen_negatives: 0
+    response_status: 401
+    response_body: authentication failed
+  backend_mismatch:
+    precondition: KNOWN_ACCOUNT_POSITIVE_SCREEN_BACKEND_CREDENTIAL_MISMATCH
+    route: BACKEND_DENY
+    accepted: false
+    backend_kind: CREDENTIAL_MISMATCH_ALL_ACTIVE_PASSWORD_AUTHENTICATORS
+    backend_calls: 1
+    kdf_calls: 1
+    cache_hits: 0
+    screen_negatives: 1
+    response_status: 401
+    response_body: authentication failed
+  transient_backend_failure:
+    precondition: KNOWN_ACCOUNT_PRE_VERIFIER_TYPED_TRANSIENT_BACKEND_RESULT
+    route: FAIL_OPEN_BACKEND
+    accepted: false
+    backend_kind: TRANSIENT_FAILURE
+    backend_calls: 1
+    kdf_calls: 0
+    cache_hits: 0
+    screen_negatives: 1
+    response_status: 401
+    response_body: authentication failed
+  valid_password:
+    precondition: KNOWN_ACCOUNT_CORRECT_PASSWORD
+    route: BACKEND_MATCH
+    accepted: true
+    backend_kind: MATCH
+    backend_calls: 1
+    kdf_calls: 1
+    cache_hits: 0
+    screen_negatives: 0
+    response_status: 200
+    response_body: authenticated
+sampling_schedule:
+  unit: WITHIN_SEED_COMPLETE_CASE_ORDINAL_GRID
+  case_blocking: false
+  shuffle: PYTHON_RANDOM_FISHER_YATES
+  seed_derivation: SHA256_ASCII_E9_SCHEDULE_V1_SEED_FIRST_64_BITS_BIG_ENDIAN
+  label_order: ALL_CASES_DECLARED_ORDER_THEN_ORDINAL_BEFORE_SHUFFLE
+  record_schedule_index: true
+diagnostics_contract:
+  timing_effects:
+    - seed_ks_request_to_eof
+    - seed_cliffs_delta_request_to_eof
+    - pooled_secondary_diagnostics
+  resource_metrics:
+    - auth_worker_cpu_ns
+    - auth_worker_wall_ns
+    - backend_cpu_ns
+    - backend_wall_ns
+    - padding_actual_wait_ns
+  padding_gates:
+    - auth_worker_overlap_failures_zero
+    - capacity_overflow_failures_zero
+    - early_release_count_zero
+    - pending_at_shutdown_zero
+  role: DESCRIPTIVE_AND_VALIDITY_DIAGNOSTICS_NOT_PRIMARY_AUC_GATE
+wire_contract:
+  transport: TCP_IPV4_LOOPBACK
+  request_bytes: 110
+  failure_status: 401
+  failure_frames:
+    - status
+    - body
+    - end
+  failure_body: authentication failed
+  connection_behavior: ONE_REQUEST_CLIENT_HALF_CLOSE_SERVER_EOF_NO_REUSE
+statistics:
+  primary_metric: frozen_external_multivariate_classifier_auc
+  secondary_metric: request_to_eof_ns
+  auc_orientation: FIXED_TRAINING_DIRECTION_RAW_CI_WITH_GLOBAL_DIRECTION_INVARIANT_BOUND
+  confidence_level: 0.95
+  failure_auc_ci_upper_threshold: 0.55
+  cluster_unit: evaluation_seed
+  bootstrap_method: evaluation_seed_cluster_percentile
+  primary_stratification: kdf_workload
+  combined_role: descriptive_secondary_only
+  classifier:
+    model: RIDGE_LOGISTIC_REGRESSION
+    feature_names:
+      - log1p_connect_ns
+      - log1p_request_to_first_byte_ns
+      - log1p_request_to_eof_ns
+      - log1p_connect_start_to_eof_ns
+      - receive_call_count
+      - receive_first_chunk_bytes
+      - receive_last_chunk_bytes
+      - receive_min_chunk_bytes
+      - receive_max_chunk_bytes
+      - receive_order_weighted_bytes
+      - local_port
+      - peer_port
+    feature_transform: LOG1P_TIMINGS_IDENTITY_OTHER_FEATURES
+    standardization: TRAINING_MEDIAN_IQR_ZERO_IQR_UNIT
+    quantile_definition: N_MINUS_ONE_TIMES_P_LINEAR_INTERPOLATION
+    numeric_dtype: IEEE754_FLOAT64
+    objective: MEAN_BINARY_CROSS_ENTROPY_PLUS_HALF_LAMBDA_L2_COEFFICIENT_NORM_SQUARED
+    row_weighting: UNIFORM_NO_CLASS_WEIGHTS_BALANCED_BY_DESIGN
+    initialization: ALL_ZERO_INTERCEPT_AND_COEFFICIENTS
+    stable_log_loss: NUMPY_LOGADDEXP
+    sigmoid_clip: [-709.0, 709.0]
+    l2_penalty: 0.001
+    intercept_penalized: false
+    solver: SCIPY_L_BFGS_B
+    gradient_tolerance: 1.0e-8
+    function_tolerance: 1.0e-12
+    convergence_gradient_inf_max: 1.0e-6
+    max_iterations: 1000
+    max_line_search_steps: 50
+    convergence_gate: SCIPY_SUCCESS_STATUS_ZERO_FINITE_AND_GRADIENT_INF_LE_1E_6
+    training_scope: PER_KDF_AND_FAILURE_PAIR_TRAINING_SEEDS_ONLY
+    evaluation_scope: FROZEN_MODEL_PER_EVALUATION_SEED
+    decision_score: STANDARDIZED_LINEAR_LOG_ODDS
+  feature_formulas:
+    log1p_connect_ns: log1p(timing.connect_ns)
+    log1p_request_to_first_byte_ns: log1p(timing.request_to_first_byte_ns)
+    log1p_request_to_eof_ns: log1p(timing.request_to_eof_ns)
+    log1p_connect_start_to_eof_ns: log1p(timing.connect_start_to_eof_ns)
+    receive_call_count: len(response.receive_call_sizes)
+    receive_first_chunk_bytes: response.receive_call_sizes[0]
+    receive_last_chunk_bytes: response.receive_call_sizes[-1]
+    receive_min_chunk_bytes: min(response.receive_call_sizes)
+    receive_max_chunk_bytes: max(response.receive_call_sizes)
+    receive_order_weighted_bytes: sum((index+1)*bytes for index,bytes in receive_call_sizes)
+    local_port: connection.local_port
+    peer_port: connection.peer_port
+  feature_input_policy: MISSING_EMPTY_NONPOSITIVE_TIMING_OR_NONFINITE_FEATURE_FAILS_CLOSED
+  auc_tie_handling: AVERAGE_RANK_MANN_WHITNEY
+  point_estimate: MAX_MEAN_RAW_AUC_ONE_MINUS_MEAN_RAW_AUC
+  direction_invariant_ci_upper: MAX_RAW_CI_UPPER_ONE_MINUS_RAW_CI_LOWER
+  per_seed_oracle_orientation_sensitivity: MEAN_PER_SEED_MAX_RAW_AUC_ONE_MINUS_RAW_AUC_NOT_PRIMARY_ESTIMAND
+  gate_rule: GLOBAL_AND_PER_SEED_ORACLE_CI_UPPERS_LE_THRESHOLD
+  percentile_definition: N_MINUS_ONE_TIMES_P_LINEAR_INTERPOLATION
+  bootstrap:
+    namespace: E9-FROZEN-CLASSIFIER-EVALUATION-SEED-BOOTSTRAP-v2
+    seed_material: PROFILE_CONTRACT_ID_STRATUM_ID_LEFT_CASE_RIGHT_CASE
+    seed_derivation: SHA256_ASCII_FIRST_64_BITS_BIG_ENDIAN
+    pseudorandom_sequence: PYTHON_RANDOM_MT19937_RANDRANGE
+    resample_size: 30
+profiles:
+  smoke:
+    evidence_class: IMPLEMENTATION_SMOKE_ONLY
+    enabled: true
+    expected_commit: UNPINNED_SMOKE
+    independent_audit_id: NOT_APPLICABLE_SMOKE
+    producer_public_key_hex: null
+    seeds:
+      - 9900
+      - 9901
+    samples_per_case_per_seed: 8
+    warmup_per_case_per_seed: 1
+    bootstrap_replicates: 200
+    pbkdf2_iterations: 100
+    pbkdf2_dklen: 16
+    kdf_workloads:
+      - algorithm: pbkdf2_hmac_sha256
+        iterations: 100
+        dklen: 16
+    failure_padding_ms: 2.0
+    auth_workers: 2
+    max_pending_padding: 32
+    socket_timeout_seconds: 2.0
+  formal:
+    evidence_class: FORMAL_E9_EXTERNAL_TIMING
+    enabled: true
+    freeze_status: PREREGISTERED_BEFORE_FORMAL_COLLECTION
+    formal_contract: CLEAN_COMMIT_OPERATOR_ASSERTIONS_POST_RUN_INDEPENDENT_AUDIT_V1
+    formal_blockers:
+      - INDEPENDENT_POST_RUN_AUDIT_REQUIRED
+    seeds:
+      - 9400
+      - 9401
+      - 9402
+      - 9403
+      - 9404
+      - 9405
+      - 9406
+      - 9407
+      - 9408
+      - 9409
+      - 9410
+      - 9411
+      - 9412
+      - 9413
+      - 9414
+      - 9415
+      - 9416
+      - 9417
+      - 9418
+      - 9419
+      - 9420
+      - 9421
+      - 9422
+      - 9423
+      - 9424
+      - 9425
+      - 9426
+      - 9427
+      - 9428
+      - 9429
+      - 9430
+      - 9431
+      - 9432
+      - 9433
+      - 9434
+      - 9435
+      - 9436
+      - 9437
+      - 9438
+      - 9439
+      - 9440
+      - 9441
+      - 9442
+      - 9443
+      - 9444
+      - 9445
+      - 9446
+      - 9447
+      - 9448
+      - 9449
+      - 9450
+      - 9451
+      - 9452
+      - 9453
+      - 9454
+      - 9455
+      - 9456
+      - 9457
+      - 9458
+      - 9459
+      - 9460
+      - 9461
+      - 9462
+      - 9463
+      - 9464
+      - 9465
+      - 9466
+      - 9467
+      - 9468
+      - 9469
+      - 9470
+      - 9471
+      - 9472
+      - 9473
+      - 9474
+      - 9475
+      - 9476
+      - 9477
+      - 9478
+      - 9479
+    seed_split:
+      training_seeds_by_kdf:
+        pbkdf2_hmac_sha256_310000_dklen32:
+          - 9400
+          - 9401
+          - 9402
+          - 9403
+          - 9404
+          - 9405
+          - 9406
+          - 9407
+          - 9408
+          - 9409
+        argon2id_m19456_t2_p1_h32:
+          - 9410
+          - 9411
+          - 9412
+          - 9413
+          - 9414
+          - 9415
+          - 9416
+          - 9417
+          - 9418
+          - 9419
+      evaluation_seeds_by_kdf:
+        pbkdf2_hmac_sha256_310000_dklen32:
+          - 9420
+          - 9421
+          - 9422
+          - 9423
+          - 9424
+          - 9425
+          - 9426
+          - 9427
+          - 9428
+          - 9429
+          - 9430
+          - 9431
+          - 9432
+          - 9433
+          - 9434
+          - 9435
+          - 9436
+          - 9437
+          - 9438
+          - 9439
+          - 9440
+          - 9441
+          - 9442
+          - 9443
+          - 9444
+          - 9445
+          - 9446
+          - 9447
+          - 9448
+          - 9449
+        argon2id_m19456_t2_p1_h32:
+          - 9450
+          - 9451
+          - 9452
+          - 9453
+          - 9454
+          - 9455
+          - 9456
+          - 9457
+          - 9458
+          - 9459
+          - 9460
+          - 9461
+          - 9462
+          - 9463
+          - 9464
+          - 9465
+          - 9466
+          - 9467
+          - 9468
+          - 9469
+          - 9470
+          - 9471
+          - 9472
+          - 9473
+          - 9474
+          - 9475
+          - 9476
+          - 9477
+          - 9478
+          - 9479
+    seed_workload_mapping:
+      "9400": pbkdf2_hmac_sha256_310000_dklen32
+      "9401": pbkdf2_hmac_sha256_310000_dklen32
+      "9402": pbkdf2_hmac_sha256_310000_dklen32
+      "9403": pbkdf2_hmac_sha256_310000_dklen32
+      "9404": pbkdf2_hmac_sha256_310000_dklen32
+      "9405": pbkdf2_hmac_sha256_310000_dklen32
+      "9406": pbkdf2_hmac_sha256_310000_dklen32
+      "9407": pbkdf2_hmac_sha256_310000_dklen32
+      "9408": pbkdf2_hmac_sha256_310000_dklen32
+      "9409": pbkdf2_hmac_sha256_310000_dklen32
+      "9410": argon2id_m19456_t2_p1_h32
+      "9411": argon2id_m19456_t2_p1_h32
+      "9412": argon2id_m19456_t2_p1_h32
+      "9413": argon2id_m19456_t2_p1_h32
+      "9414": argon2id_m19456_t2_p1_h32
+      "9415": argon2id_m19456_t2_p1_h32
+      "9416": argon2id_m19456_t2_p1_h32
+      "9417": argon2id_m19456_t2_p1_h32
+      "9418": argon2id_m19456_t2_p1_h32
+      "9419": argon2id_m19456_t2_p1_h32
+      "9420": pbkdf2_hmac_sha256_310000_dklen32
+      "9421": pbkdf2_hmac_sha256_310000_dklen32
+      "9422": pbkdf2_hmac_sha256_310000_dklen32
+      "9423": pbkdf2_hmac_sha256_310000_dklen32
+      "9424": pbkdf2_hmac_sha256_310000_dklen32
+      "9425": pbkdf2_hmac_sha256_310000_dklen32
+      "9426": pbkdf2_hmac_sha256_310000_dklen32
+      "9427": pbkdf2_hmac_sha256_310000_dklen32
+      "9428": pbkdf2_hmac_sha256_310000_dklen32
+      "9429": pbkdf2_hmac_sha256_310000_dklen32
+      "9430": pbkdf2_hmac_sha256_310000_dklen32
+      "9431": pbkdf2_hmac_sha256_310000_dklen32
+      "9432": pbkdf2_hmac_sha256_310000_dklen32
+      "9433": pbkdf2_hmac_sha256_310000_dklen32
+      "9434": pbkdf2_hmac_sha256_310000_dklen32
+      "9435": pbkdf2_hmac_sha256_310000_dklen32
+      "9436": pbkdf2_hmac_sha256_310000_dklen32
+      "9437": pbkdf2_hmac_sha256_310000_dklen32
+      "9438": pbkdf2_hmac_sha256_310000_dklen32
+      "9439": pbkdf2_hmac_sha256_310000_dklen32
+      "9440": pbkdf2_hmac_sha256_310000_dklen32
+      "9441": pbkdf2_hmac_sha256_310000_dklen32
+      "9442": pbkdf2_hmac_sha256_310000_dklen32
+      "9443": pbkdf2_hmac_sha256_310000_dklen32
+      "9444": pbkdf2_hmac_sha256_310000_dklen32
+      "9445": pbkdf2_hmac_sha256_310000_dklen32
+      "9446": pbkdf2_hmac_sha256_310000_dklen32
+      "9447": pbkdf2_hmac_sha256_310000_dklen32
+      "9448": pbkdf2_hmac_sha256_310000_dklen32
+      "9449": pbkdf2_hmac_sha256_310000_dklen32
+      "9450": argon2id_m19456_t2_p1_h32
+      "9451": argon2id_m19456_t2_p1_h32
+      "9452": argon2id_m19456_t2_p1_h32
+      "9453": argon2id_m19456_t2_p1_h32
+      "9454": argon2id_m19456_t2_p1_h32
+      "9455": argon2id_m19456_t2_p1_h32
+      "9456": argon2id_m19456_t2_p1_h32
+      "9457": argon2id_m19456_t2_p1_h32
+      "9458": argon2id_m19456_t2_p1_h32
+      "9459": argon2id_m19456_t2_p1_h32
+      "9460": argon2id_m19456_t2_p1_h32
+      "9461": argon2id_m19456_t2_p1_h32
+      "9462": argon2id_m19456_t2_p1_h32
+      "9463": argon2id_m19456_t2_p1_h32
+      "9464": argon2id_m19456_t2_p1_h32
+      "9465": argon2id_m19456_t2_p1_h32
+      "9466": argon2id_m19456_t2_p1_h32
+      "9467": argon2id_m19456_t2_p1_h32
+      "9468": argon2id_m19456_t2_p1_h32
+      "9469": argon2id_m19456_t2_p1_h32
+      "9470": argon2id_m19456_t2_p1_h32
+      "9471": argon2id_m19456_t2_p1_h32
+      "9472": argon2id_m19456_t2_p1_h32
+      "9473": argon2id_m19456_t2_p1_h32
+      "9474": argon2id_m19456_t2_p1_h32
+      "9475": argon2id_m19456_t2_p1_h32
+      "9476": argon2id_m19456_t2_p1_h32
+      "9477": argon2id_m19456_t2_p1_h32
+      "9478": argon2id_m19456_t2_p1_h32
+      "9479": argon2id_m19456_t2_p1_h32
+    kdf_workload_contracts:
+      pbkdf2_hmac_sha256_310000_dklen32:
+        algorithm: pbkdf2_hmac_sha256
+        iterations: 310000
+        dklen: 32
+      argon2id_m19456_t2_p1_h32:
+        algorithm: argon2id
+        version: 19
+        memory_kib: 19456
+        time_cost: 2
+        parallelism: 1
+        hash_len: 32
+    samples_per_case_per_seed: 200
+    warmup_per_case_per_seed: 10
+    bootstrap_replicates: 2000
+    pbkdf2_iterations: 310000
+    pbkdf2_dklen: 32
+    kdf_workloads:
+      - algorithm: pbkdf2_hmac_sha256
+        iterations: 310000
+        dklen: 32
+      - algorithm: argon2id
+        version: 19
+        memory_kib: 19456
+        time_cost: 2
+        parallelism: 1
+        hash_len: 32
+    failure_padding_ms: 10.0
+    auth_workers: 4
+    max_pending_padding: 256
+    socket_timeout_seconds: 5.0

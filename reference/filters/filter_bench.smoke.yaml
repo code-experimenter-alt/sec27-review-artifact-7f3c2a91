@@ -1,0 +1,39 @@
+schema_version: 1
+scenario: phase1_filter_smoke
+seeds: [101, 202]
+dataset:
+  seed: 20260805
+  account_count: 256
+  nonmember_count: 4096
+measurement:
+  warmup_count: 64
+  latency_sample_count: 256
+  repeat_fp_keys: 4
+  repeat_count: 8
+  confidence_z: 1.959963984540054
+  cold_cache:
+    enabled: true
+    query_count: 128
+    batch_size: 16
+    eviction_bytes: 1048576
+methods:
+  exact_tag: true
+  truncated_tags:
+    bits: [8, 12, 16, 20, 24, 32, 64]
+  global_bloom:
+    bits_per_account: [4, 8, 16]
+    k_values: [1, 2, 3, 4, 5, 6]
+  blocked_bloom:
+    bits_per_account: [4, 8, 16]
+    k_values: [1, 2, 3, 4, 5, 6]
+  xor_static:
+    fingerprint_bits: [8, 12, 16]
+    capacity_factor: 1.23
+    max_attempts: 100
+  cuckoo:
+    fingerprint_bits: [8, 12, 16]
+    bucket_size: 4
+    target_load: 0.90
+    max_kicks: 500
+    max_seed_attempts: 20
+output: experiments/outputs/scratch/filter_bench_smoke.jsonl

@@ -1,0 +1,43 @@
+schema_version: 1
+scenario: E1_E2_complete_filter_frontier
+require_phase1_grid: true
+seeds: [104729, 130363, 155921, 181081, 205759, 230411, 255053, 279709, 304349, 329041]
+dataset:
+  seed: 20260805
+  account_count: 100000
+  nonmember_count: 10000000
+measurement:
+  warmup_count: 10000
+  latency_sample_count: 100000
+  repeat_fp_keys: 64
+  repeat_count: 1000
+  confidence_z: 1.959963984540054
+  cold_cache:
+    enabled: true
+    query_count: 100000
+    batch_size: 256
+    eviction_bytes: 67108864
+methods:
+  exact_tag: true
+  truncated_tags:
+    bits: [8, 12, 16, 20, 24, 32, 64]
+  global_bloom:
+    bits_per_account: [4, 8, 12, 16, 24, 32, 48, 64]
+    # Every integer from 1 through 48 is expanded; no post-hoc k selection.
+    k_min: 1
+    k_max: 48
+  blocked_bloom:
+    bits_per_account: [4, 8, 12, 16, 24, 32, 48, 64]
+    k_min: 1
+    k_max: 48
+  xor_static:
+    fingerprint_bits: [4, 8, 12, 16, 20, 24, 32, 48, 64]
+    capacity_factor: 1.23
+    max_attempts: 100
+  cuckoo:
+    fingerprint_bits: [4, 8, 12, 16, 20, 24, 32, 48, 64]
+    bucket_size: 4
+    target_load: 0.90
+    max_kicks: 500
+    max_seed_attempts: 20
+output: experiments/outputs/raw/filter_bench_E1_E2.jsonl

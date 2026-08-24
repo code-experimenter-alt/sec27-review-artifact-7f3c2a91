@@ -1,0 +1,103 @@
+schema: traps-g7-service-fault-config-v1
+experiment_id: g7-network-process-backend-formal-v1
+formal: true
+execution_enabled: true
+execution_classification: FORMAL_SERVICE_FAULT_MATRIX
+evidence_scope: LOOPBACK_USERSPACE_PROXY_PROCESS_BACKEND_FAULT_COMPONENT
+g7_status: BLOCKED_PENDING_E9_AND_INDEPENDENT_FREEZE_AUDIT
+blockers:
+  - E9_EXTERNAL_FAILURE_ONLY_TIMING_ARTIFACT_NOT_COMPLETE
+  - CONTENT_ADDRESSED_SERVICE_FAULT_ARTIFACT_FREEZE_NOT_COMPLETE
+  - INDEPENDENT_SERVICE_FAULT_ARTIFACT_AUDIT_NOT_COMPLETE
+fault_layer:
+  transport_proxy_process: REQUIRED_INDEPENDENT_OS_PROCESS
+  producer_to_proxy_transport: IPV4_LOOPBACK_TCP
+  proxy_to_edge_transport: IPV4_LOOPBACK_TCP_ONE_CONNECTION_PER_DELIVERY
+  edge_fault_injection_rpc: FORBIDDEN
+  loopback_only: true
+  kernel_netem: false
+  production_network_claim: false
+  claim: USERSPACE_LOGICAL_DELIVERY_FAULTS_ACROSS_REAL_LOOPBACK_TCP_BOUNDARIES
+rpc_accounting:
+  classification: RECORDED_CLAIM_BEARING_RPCS_ONLY
+  included:
+    - coordinator_to_edge_login
+    - coordinator_to_edge_lease_expire
+    - coordinator_to_proxy_produce
+    - coordinator_to_proxy_delay_barrier_wait
+    - coordinator_to_proxy_delay_release
+    - proxy_to_edge_deliver
+    - edge_to_backend_verify_finalize
+  excluded_orchestration:
+    - startup_ping
+    - status_poll
+    - set_backend_endpoint
+    - set_edge_endpoint
+random_observations:
+  classification: SESSION_LOCAL_RELATIONAL_EVIDENCE_NOT_CROSS_RUN_SCALAR_EQUALITY
+  excluded_from_cross_run_scalar_equality:
+    - pid
+    - ephemeral_port
+    - session_nonce
+    - connection_nonce
+    - exact_elapsed_ns
+    - platform_specific_nonzero_edge_kill_exit_code
+    - platform_specific_backend_crash_failure_category
+    - platform_specific_backend_crash_transport_outcome
+    - derived_session_id
+    - derived_connection_id
+    - exact_request_bytes
+    - exact_response_bytes
+  claim_bearing_normalization:
+    - role_ordered_process_alias
+    - session_and_endpoint_relationship_graph
+    - caller_callee_rpc_relationship
+    - connection_outcome_and_payload_presence
+    - elapsed_threshold_class
+    - exit_class
+    - backend_application_crash_exit_code_73
+    - backend_application_crash_no_response_transport_class
+    - delay_barrier_causal_order
+    - complete_component_metrics_and_cache_delta
+edges:
+  - edge-a
+coordinates:
+  - core_path_probe
+  - transport_delay
+  - transport_loss
+  - transport_duplicate
+  - transport_reorder
+  - edge_kill_restart_persistence
+  - edge_corrupt_state_fail_open
+  - backend_timeout
+  - backend_drop
+  - backend_malformed
+  - backend_typed_transient_failure
+  - backend_typed_partial_failure
+  - backend_crash_restart
+credential:
+  username: alice
+  account_id: account-alice
+  account_generation: 1
+  credential_set_version: 1
+  directory_epoch: 1
+  salt_hex: "30313233343536373839616263646566"
+  valid_password_hex: 636f72726563742d70617373776f7264
+  invalid_probe_password_hex: 696e76616c69642d70726f6265
+transport:
+  host: 127.0.0.1
+  rpc_timeout_ms: 1000
+  backend_client_timeout_ms: 80
+  backend_timeout_server_ms: 240
+  logical_delay_ms: 120
+  process_start_timeout_ms: 5000
+  process_exit_timeout_ms: 5000
+negative_cache:
+  capacity: 16
+  max_ttl_seconds: 60.0
+  max_entries_per_account: 8
+  max_entries_per_region: 16
+singleflight:
+  max_waiters_per_key: 8
+  max_waiters_global: 32
+  waiter_timeout_seconds: 1.0

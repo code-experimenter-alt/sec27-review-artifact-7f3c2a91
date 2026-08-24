@@ -1,0 +1,11 @@
+numpy==2.2.6
+pandas>=2.0,<3
+scipy==1.15.3
+PyYAML>=6,<7
+pytest>=8,<9
+hypothesis>=6.100,<7
+cvxpy>=1.5,<2
+matplotlib>=3.8,<4
+psutil>=5.9,<7
+argon2-cffi>=25,<26
+cryptography>=43,<49

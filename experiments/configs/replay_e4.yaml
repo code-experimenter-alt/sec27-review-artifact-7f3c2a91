@@ -1,0 +1,130 @@
+schema_version: 4
+contract_id: traps-e4-formal-v4-10x93
+profile: formal
+status: RESEARCH_IN_PROGRESS
+evidence_tier: formal_replay
+require_clean_git: true
+source_attestation:
+  schema: traps-e4-source-attestation-v1
+  required_for_formal: true
+  trust_model: external_procedural_trusted_input_not_cryptographic_proof
+numeric_contract:
+  schema: traps-e4-field-decimal-v1
+  decimal_context_precision: 80
+  rounding: ROUND_HALF_EVEN
+  validation: exact_json_type_and_canonical_value
+  gate_comparison: exact_unquantized_decimal_ratio
+  row_field_quanta:
+    backend_checks_per_distinct_invalid: 1e-12
+    backend_work_amplification_per_tuple: 1e-12
+    backend_work_fraction_of_static: 1e-15
+    backend_work_reduction_factor_vs_static: 1e-12
+    false_positive_discovery_observed_fpr: 1e-15
+    filter_actual_load: 1e-15
+    filter_load_acceptance_max: 1e-15
+    filter_load_acceptance_min: 1e-15
+    filter_load_delta_from_target: 1e-15
+    filter_parameters.analytic_fpr_standard: 1e-15
+    filter_parameters.load_factor: 1e-15
+    filter_target_load: 1e-15
+    memory_cache_layout_manifest.hash_table_max_load: 1e-15
+    observed_first_seen_ffr: 1e-15
+    observed_request_weighted_ffr: 1e-15
+    replay_request_amplification: 1e-12
+    trace_summary.event_interval_seconds: 1e-15
+    trace_summary.generated_distinct_tuple_rate_per_second: 1e-9
+    trace_summary.generated_request_rate_per_second: 1e-9
+    trace_summary.logical_end_seconds: 1e-15
+    trace_summary.logical_start_seconds: 1e-15
+    trace_summary.logical_window_seconds: 1e-15
+    worst_region_ffr: 1e-15
+  aggregate_field_quanta:
+    backend_checks_per_tuple: 1e-12
+    generated_request_rate_per_second_max: 1e-9
+    generated_request_rate_per_second_min: 1e-9
+    paired_backend_work_fraction_of_static: 1e-15
+    paired_backend_checks_saved_vs_static: 1e-6
+    paired_static_reduction_factor_finite: 1e-12
+output: experiments/outputs/raw/e4_replay.jsonl
+
+seeds: [7100, 7101, 7102, 7103, 7104, 7105, 7106, 7107, 7108, 7109]
+methods:
+  - static_no_cache
+  - lru
+  - lfu
+  - tinylfu
+  - fixed_ttl
+  - future_oracle
+  - adaptive_cuckoo
+
+dataset:
+  account_count: 3680
+  seed: 20260805
+  false_positive_search_limit: 2000000
+
+filter:
+  fingerprint_bits: 8
+  bucket_size: 4
+  target_load: 0.90
+  actual_load_acceptance_min: 0.89
+  actual_load_acceptance_max: 0.91
+  max_kicks: 500
+  max_seed_attempts: 30
+
+cache:
+  retention_ttl_seconds: 3600.0
+  fixed_ttl_seconds: 0.01
+  tinylfu_reset_after: 100000
+
+replay:
+  multiplicities: [2, 10, 100, 1000, 10000]
+  modes: [sequential, concurrent]
+  concurrency: 32
+  event_interval_seconds: 0.000001
+  concurrent_overlap_model: frozen_batch_by_concurrency_width
+  max_waiters_per_key: 64
+  max_waiters_global: 4096
+  waiter_timeout_seconds: 30.0
+
+scenarios:
+  - name: resident_capacity
+    key_count: 16
+    order: grouped
+    cache_capacity: 32
+  - name: over_capacity_churn_moderate
+    key_count: 128
+    order: round_robin
+    cache_capacity: 96
+    multiplicities: [100]
+    modes: [sequential]
+  - name: over_capacity_churn_severe
+    key_count: 128
+    order: round_robin
+    cache_capacity: 32
+    multiplicities: [1000]
+    modes: [sequential]
+  - name: per_account_quota_tight
+    key_count: 8
+    order: round_robin
+    cache_capacity: 64
+    max_entries_per_account: 1
+    same_account: true
+    multiplicities: [100]
+    modes: [sequential]
+  - name: per_account_quota_relaxed
+    key_count: 8
+    order: round_robin
+    cache_capacity: 64
+    max_entries_per_account: 4
+    same_account: true
+    multiplicities: [1000]
+    modes: [sequential]
+
+gate_policy:
+  smoke_never_satisfies_g2: true
+  g2_checks_per_tuple_max: 1.1
+  g2_static_work_improvement_min: 10.0
+  g2_legitimate_p99_regression_max_fraction: 0.05
+  phase1_static_baseline_source: E1_E2_phase1_required
+  service_p99_source: E7_service_benchmark_required
+  runner_does_not_adjudicate_gate: true
